@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ReceiveHttpContextCommand.fs" />
     <Compile Include="RestartHttpListenerCommand.fs" />
     <Compile Include="StartHttpListenerCommand.fs" />
     <Compile Include="StopHttpListenerCommand.fs" />

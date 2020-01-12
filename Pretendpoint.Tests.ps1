@@ -27,6 +27,20 @@ Describe 'Pretendpoint' {
         } -Skip:$notAdmin
      }
     $tests = $http.Keys |foreach {@{ Port = $_; Listener = $http[$_] }}
+    Context 'Receive-HttpContext cmdlet' {
+        It "Given an HTTP Listener bound to port <Port>, it should stop listening." -TestCases $tests {
+            Param($Port,$Listener)
+            if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
+            $ua = "$(New-Guid)"
+            Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+                "& { Invoke-WebRequest http://localhost:$Port/ -UserAgent $ua }"  -WindowStyle Hidden
+            $context = $Listener |Receive-HttpContext
+            $context |Should -Not -BeNullOrEmpty
+            $context.Request.UserAgent |Should -BeExactly $ua
+            $context.Response.StatusCode = 204
+            $context.Response.Close()
+        } -Skip:$notAdmin
+    }
     Context 'Suspend-HttpListener cmdlet' {
         It "Given an HTTP Listener bound to port <Port>, it should stop listening." -TestCases $tests {
             Param($Port,$Listener)
