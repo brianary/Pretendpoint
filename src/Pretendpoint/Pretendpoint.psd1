@@ -12,8 +12,10 @@ Description = 'A minimal set of PowerShell cmdlets to use an HTTP test server/en
 PowerShellVersion = '6.0'
 FunctionsToExport = @()
 CmdletsToExport = @(
+    'Restart-HttpListener'
     'Start-HttpListener'
     'Stop-HttpListener'
+    'Suspend-HttpListener'
 )
 VariablesToExport = @()
 AliasesToExport = @()

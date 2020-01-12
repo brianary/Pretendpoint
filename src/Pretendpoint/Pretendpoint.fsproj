@@ -5,8 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="RestartHttpListenerCommand.fs" />
     <Compile Include="StartHttpListenerCommand.fs" />
     <Compile Include="StopHttpListenerCommand.fs" />
+    <Compile Include="SuspendHttpListenerCommand.fs" />
   </ItemGroup>
 
   <ItemGroup>

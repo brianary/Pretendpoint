@@ -1,5 +1,5 @@
 # Pester tests, see https://github.com/Pester/Pester/wiki
-$envPath = $env:Path # avoid testingc the wrong cmdlets
+$envPath = $env:Path # avoid testing the wrong cmdlets
 Import-Module (Resolve-Path ./src/*/bin/Debug/*/*.psd1) -vb
 $notAdmin = !([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).`
     IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -26,15 +26,31 @@ Describe 'Pretendpoint' {
             $socket.Dispose()
         } -Skip:$notAdmin
      }
-     Context 'Stop-HttpListener cmdlet' {
-       It "Given an HTTP Listener bound to port <Port>, it should stop listening." -TestCases @(
-           $http.Keys |foreach {@{ Port = $_; Listener = $http[$_] }}
-       ) {
-           Param($Port,$Listener)
-           if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
-           $Listener |Stop-HttpListener
-           $Listener.IsListening |Should -BeFalse
-       } -Skip:$notAdmin
+    $tests = $http.Keys |foreach {@{ Port = $_; Listener = $http[$_] }}
+    Context 'Suspend-HttpListener cmdlet' {
+        It "Given an HTTP Listener bound to port <Port>, it should stop listening." -TestCases $tests {
+            Param($Port,$Listener)
+            if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
+            $Listener |Suspend-HttpListener
+            $Listener.IsListening |Should -BeFalse
+        } -Skip:$notAdmin
+    }
+    Context 'Restart-HttpListener cmdlet' {
+        It "Given a suspended HTTP Listener bound to port <Port>, it should start listening again." -TestCases $tests {
+            Param($Port,$Listener)
+            if($Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener is still listening"}
+            $Listener |Restart-HttpListener
+            $Listener.IsListening |Should -BeTrue
+        } -Skip:$notAdmin
+    }
+    Context 'Stop-HttpListener cmdlet' {
+        It "Given an HTTP Listener bound to port <Port>, it should stop listening, and not be startable." -TestCases $tests {
+            Param($Port,$Listener)
+            if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
+            $Listener |Stop-HttpListener
+            $Listener.IsListening |Should -BeFalse
+            { $Listener.Start() } |Should -Throw 'Cannot access a disposed object.'
+        } -Skip:$notAdmin
     }
 }
 $env:Path = $envPath
