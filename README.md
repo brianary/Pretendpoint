@@ -4,6 +4,8 @@ Pretendpoint
 <!-- To publish to PowerShell Gallery: dotnet build -t:PublishModule -c Release -->
 <!-- img src="Pretendpoint.svg" alt="Pretendpoint icon" align="right" / -->
 
+[![Actions Status](https://github.com/brianary/Pretendpoint/workflows/.NET%20Core/badge.svg)](https://github.com/brianary/Pretendpoint/actions)
+
 A minimal set of PowerShell cmdlets to use an HTTP test server/endpoint for inspecting or debugging client requests.
 
 Cmdlets
