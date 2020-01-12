@@ -13,7 +13,7 @@ type StartHttpListenerCommand () =
     /// Ports on the localhost to bind to.
     [<Parameter(Position=0,Mandatory=true,ValueFromRemainingArguments=true)>]
     [<ValidateCount(1,2147483647)>]
-    member val Port : int[] = [|8080|] with get, set
+    member val Port : int[] = [| |] with get, set
 
     /// Client authentication methods to support.
     [<Parameter>]
@@ -34,7 +34,7 @@ type StartHttpListenerCommand () =
             ErrorRecord (InvalidOperationException msg, "NOHTTP", ErrorCategory.InvalidOperation, Environment.OSVersion)
                 |> x.ThrowTerminatingError
         let listener = new HttpListener (AuthenticationSchemes=x.AuthenticationSchemes)
-        Seq.iter (sprintf "http://localhost:%d/" >> listener.Prefixes.Add) x.Port
+        Seq.iter (sprintf "http://*:%d/" >> listener.Prefixes.Add) x.Port
         listener.Start ()
         sprintf "%A" listener |> x.WriteVerbose
         x.WriteObject listener
