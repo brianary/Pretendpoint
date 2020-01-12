@@ -11,7 +11,11 @@ Cmdlets
 
 Documentation is automatically generated using [platyPS](https://github.com/PowerShell/platyPS).
 
-- [Get-Foo](docs/Get-Foo.md)
+- [Receive-HttpContext](docs/Receive-HttpContext.md)
+- [Restart-HttpListener](docs/Restart-HttpListener.md)
+- [Start-HttpListener](docs/Start-HttpListener.md)
+- [Stop-HttpListener](docs/Stop-HttpListener.md)
+- [Suspend-HttpListener](docs/Suspend-HttpListener.md)
 
 Tests
 -----
