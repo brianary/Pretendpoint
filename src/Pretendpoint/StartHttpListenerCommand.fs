@@ -13,7 +13,7 @@ type StartHttpListenerCommand () =
     /// Ports on the localhost to bind to.
     [<Parameter(Position=0,Mandatory=true,ValueFromRemainingArguments=true)>]
     [<ValidateCount(1,2147483647)>]
-    member val Port : int[] = [| |] with get, set
+    member val Port : int[] = [||] with get, set
 
     /// Client authentication methods to support.
     [<Parameter>]
@@ -27,8 +27,8 @@ type StartHttpListenerCommand () =
     [<Parameter>]
     member val IgnoreWriteExceptions : SwitchParameter = (SwitchParameter false) with get, set
 
-    override x.BeginProcessing () =
-        base.BeginProcessing ()
+    override x.ProcessRecord () =
+        base.ProcessRecord ()
         if not HttpListener.IsSupported then
             let msg = sprintf "HTTP listeners are not supported on this OS (%s)" Environment.OSVersion.VersionString
             ErrorRecord (InvalidOperationException msg, "NOHTTP", ErrorCategory.InvalidOperation, Environment.OSVersion)

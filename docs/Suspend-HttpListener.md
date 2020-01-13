@@ -23,7 +23,7 @@ Suspend-HttpListener [-Listener] <HttpListener> [<CommonParameters>]
 
 ### EXAMPLE 1
 ```
-Suspend-HttpListener $http
+PS C:\> Suspend-HttpListener $http
 ```
 
 The $http listener is paused.

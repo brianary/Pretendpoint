@@ -23,7 +23,7 @@ Restart-HttpListener [-Listener] <HttpListener> [<CommonParameters>]
 
 ### EXAMPLE 1
 ```
-Restart-HttpListener $http
+PS C:\> Restart-HttpListener $http
 ```
 
 The $http listener is stopped and restarted.

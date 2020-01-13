@@ -14,8 +14,8 @@ type ReceieveHttpContextCommand () =
     [<ValidateNotNullOrEmpty>]
     member val Listener : HttpListener = null with get, set
 
-    override x.EndProcessing () =
-        base.EndProcessing ()
+    override x.ProcessRecord () =
+        base.ProcessRecord ()
         if not x.Listener.IsListening then
             ErrorRecord (InvalidOperationException "The HTTP listener isn't listening.", "NOLISTEN",
                 ErrorCategory.InvalidOperation, x.Listener) |> x.ThrowTerminatingError

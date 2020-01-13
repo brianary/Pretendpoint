@@ -5,15 +5,15 @@ online version: https://docs.microsoft.com/dotnet/api/system.net.httplistener
 schema: 2.0.0
 ---
 
-# Stop-HttpListener
+# Read-WebRequest
 
 ## SYNOPSIS
-Closes an HTTP listener.
+Parses an HTTP listener request.
 
 ## SYNTAX
 
 ```
-Stop-HttpListener [-Listener] <HttpListener> [<CommonParameters>]
+Read-WebRequest [-Request] <HttpListenerRequest> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -23,25 +23,25 @@ Stop-HttpListener [-Listener] <HttpListener> [<CommonParameters>]
 
 ### EXAMPLE 1
 ```
-PS C:\> Stop-HttpListener $http
+PS C:\> Read-WebRequest $httpContext.Request
 ```
 
-The $http listener is closed.
+Parses the request body as a string or byte array.
 
 ## PARAMETERS
 
-### -Listener
-The HTTP listener to close.
+### -Request
+The HTTP listener to receive the request through.
 
 ```yaml
-Type: HttpListener
+Type: HttpListenerRequest
 Parameter Sets: (All)
 Aliases:
 
 Required: True
 Position: 0
 Default value: None
-Accept pipeline input: True (ByValue)
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -50,8 +50,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.Net.HttpListener to close.
-### System.Net.HttpListener
+### System.Net.HttpListenerRequest
 
 ## OUTPUTS
 

@@ -24,7 +24,7 @@ Start-HttpListener [-Port] <Int32[]> [-AuthenticationSchemes <AuthenticationSche
 
 ### EXAMPLE 1
 ```
-$Listener = Start-HttpListener 8080
+PS C:\> $Listener = Start-HttpListener 8080
 ```
 
 Creates and starts an HTTP listener at http://localhost:8080/

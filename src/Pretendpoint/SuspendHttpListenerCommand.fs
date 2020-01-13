@@ -14,6 +14,6 @@ type SuspendHttpListenerCommand () =
     [<ValidateNotNullOrEmpty>]
     member val Listener : HttpListener = null with get, set
 
-    override x.EndProcessing () =
-        base.EndProcessing ()
+    override x.ProcessRecord () =
+        base.ProcessRecord ()
         x.Listener.Stop ()

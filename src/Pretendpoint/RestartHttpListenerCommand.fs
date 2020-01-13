@@ -14,7 +14,7 @@ type RestartHttpListenerCommand () =
     [<ValidateNotNullOrEmpty>]
     member val Listener : HttpListener = null with get, set
 
-    override x.EndProcessing () =
-        base.EndProcessing ()
+    override x.ProcessRecord () =
+        base.ProcessRecord ()
         if x.Listener.IsListening then x.Listener.Stop ()
         x.Listener.Start ()
