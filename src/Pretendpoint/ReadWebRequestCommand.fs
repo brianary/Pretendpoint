@@ -2,7 +2,7 @@ namespace Pretendpoint
 
 open System
 open System.IO
-open System.Management.Automation // PowerShell attributes come from this namespace
+open System.Management.Automation
 open System.Net
 open System.Net.Mime
 open System.Text
@@ -22,6 +22,7 @@ type ReadWebRequestCommand () =
     [<ValidateSet("ascii","byte","utf16","utf16BE","utf32","utf32BE","utf7","utf8")>]
     member val Encoding : string = null with get, set
 
+    /// Reads a binary body from a request, with cmdlet integration.
     static member internal ReadBinaryData (cmdlet:PSCmdlet) (request:HttpListenerRequest) =
         if not request.HasEntityBody then [||]
         else
@@ -44,8 +45,13 @@ type ReadWebRequestCommand () =
                         ErrorCategory.InvalidOperation, request) |> cmdlet.ThrowTerminatingError
                 data
 
+    /// Reads a text body from a request.
     static member internal ReadTextData (cmdlet:PSCmdlet) (request:HttpListenerRequest) (encoding:Encoding) =
         encoding.GetString(ReadWebRequestCommand.ReadBinaryData cmdlet request)
+
+    /// Returns an encoding, given a PowerShell-idiomatic, simplified encoding name.
+    static member internal GetEncoding name =
+        Regex.Replace (name, @"\Autf", "utf-") |> Encoding.GetEncoding
 
     override x.ProcessRecord () =
         base.ProcessRecord ()
@@ -63,6 +69,6 @@ type ReadWebRequestCommand () =
         else
             if x.Encoding = "byte" then ReadWebRequestCommand.ReadBinaryData x x.Request |> x.WriteObject
             else
-                Encoding.GetEncoding (Regex.Replace (x.Encoding, @"\Autf", "utf-"))
+                ReadWebRequestCommand.GetEncoding x.Encoding
                     |> ReadWebRequestCommand.ReadTextData x x.Request
                     |> x.WriteObject

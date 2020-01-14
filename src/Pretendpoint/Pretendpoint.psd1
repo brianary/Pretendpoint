@@ -18,6 +18,7 @@ CmdletsToExport = @(
     'Start-HttpListener'
     'Stop-HttpListener'
     'Suspend-HttpListener'
+    'Write-WebResponse'
 )
 VariablesToExport = @()
 AliasesToExport = @()

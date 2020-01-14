@@ -1,7 +1,7 @@
 namespace Pretendpoint
 
 open System
-open System.Management.Automation // PowerShell attributes come from this namespace
+open System.Management.Automation
 open System.Net
 
 /// Closes an HTTP listener.

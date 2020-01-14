@@ -23,7 +23,7 @@ Receive-HttpContext [-Listener] <HttpListener> [<CommonParameters>]
 
 ### Example 1
 ```powershell
-PS C:\> $context = Receive-WebRequest.ps1 $http
+PS C:\> $context = Receive-WebRequest $http
 ```
 
 Accepts an HTTP request returns it in an HTTP context object.

@@ -60,25 +60,54 @@ Describe 'Pretendpoint' {
         It "Given an HTTP Listener bound to port <Port>, it should receive HTTP POST data '<Data>'." -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
-            Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
-                "& { Invoke-WebRequest http://localhost:$Port/ -Body '$Data' -ContentType text/plain }"  -WindowStyle Hidden
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+                "& { Invoke-WebRequest http://localhost:$Port/ -Body '$Data' -ContentType text/plain }" -WindowStyle Hidden -PassThru
             $context = $Listener |Receive-HttpContext
             $context |Should -Not -BeNullOrEmpty
             $context |Read-WebRequest |Should -BeExactly $Data
             $context.Response.StatusCode = 204
             $context.Response.Close()
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
         } -Skip:$notAdmin
         It "Given an HTTP Listener bound to port <Port>, it should receive HTTP POST data '<Data>' (binary)." -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $binData = ([guid]$Data).ToByteArray()
-            Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
-                "& { Invoke-WebRequest http://localhost:$Port/ -Body ([byte[]]($($binData -join ','))) -ContentType application/octet-stream }" -WindowStyle Hidden
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+                "& { Invoke-WebRequest http://localhost:$Port/ -Body ([byte[]]($($binData -join ','))) -ContentType application/octet-stream }" -WindowStyle Hidden -PassThru
             $context = $Listener |Receive-HttpContext
             $context |Should -Not -BeNullOrEmpty
             [bool](compare $binData ($context |Read-WebRequest)) |Should -BeFalse
             $context.Response.StatusCode = 204
             $context.Response.Close()
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+        } -Skip:$notAdmin
+    }
+    $testdrive = (Get-PSDrive TestDrive).Root
+    Context 'Write-WebResponse cmdlet' {
+        It "Given an HTTP Listener bound to port <Port>, it should send HTTP response data '<Data>'." -TestCases $tests {
+            Param($Port,$Listener,$Data)
+            if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+                "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.txt' }" -WindowStyle Hidden -PassThru
+            $context = $Listener |Receive-HttpContext
+            $context |Should -Not -BeNullOrEmpty
+            $Data |Write-WebResponse $context.Response
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+            'TestDrive:\testbody.txt' |Should -FileContentMatch $Data
+        } -Skip:$notAdmin
+        It "Given an HTTP Listener bound to port <Port>, it should send HTTP response data '<Data>' (binary)." -TestCases $tests {
+            Param($Port,$Listener,$Data)
+            if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
+            [byte[]] $binData = ([guid]$Data).ToByteArray()
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+                "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.dat' }" -WindowStyle Hidden -PassThru
+            $context = $Listener |Receive-HttpContext
+            $context |Should -Not -BeNullOrEmpty
+            ,$binData |Write-WebResponse $context.Response
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+            [byte[]] $response = Get-Content TestDrive:\testbody.dat -AsByteStream
+            [bool](compare $binData $response) |Should -BeFalse
         } -Skip:$notAdmin
     }
     Context 'Stop-HttpListener cmdlet' {

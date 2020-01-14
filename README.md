@@ -19,6 +19,7 @@ Documentation is automatically generated using [platyPS](https://github.com/Powe
 - [Start-HttpListener](docs/Start-HttpListener.md)
 - [Stop-HttpListener](docs/Stop-HttpListener.md)
 - [Suspend-HttpListener](docs/Suspend-HttpListener.md)
+- [Write-WebResponse](docs/Write-WebResponse.md)
 
 Tests
 -----

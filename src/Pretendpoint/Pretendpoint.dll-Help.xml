@@ -71,7 +71,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Read-WebRequest.ps1 $httpContext.Request</dev:code>
+        <dev:code>PS C:\&gt; Read-WebRequest $httpContext.Request</dev:code>
         <dev:remarks>
           <maml:para>Parses the request body as a string or byte array.</maml:para>
         </dev:remarks>
@@ -155,7 +155,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; $context = Receive-WebRequest.ps1 $http</dev:code>
+        <dev:code>PS C:\&gt; $context = Receive-WebRequest $http</dev:code>
         <dev:remarks>
           <maml:para>Accepts an HTTP request returns it in an HTTP context object.</maml:para>
         </dev:remarks>
@@ -242,7 +242,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Restart-HttpListener $http</dev:code>
+        <dev:code>PS C:\&gt; Restart-HttpListener $http</dev:code>
         <dev:remarks>
           <maml:para>The $http listener is stopped and restarted.</maml:para>
         </dev:remarks>
@@ -414,7 +414,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>$Listener = Start-HttpListener 8080</dev:code>
+        <dev:code>PS C:\&gt; $Listener = Start-HttpListener 8080</dev:code>
         <dev:remarks>
           <maml:para>Creates and starts an HTTP listener at http://localhost:8080/</maml:para>
         </dev:remarks>
@@ -510,7 +510,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Stop-HttpListener $http</dev:code>
+        <dev:code>PS C:\&gt; Stop-HttpListener $http</dev:code>
         <dev:remarks>
           <maml:para>The $http listener is closed.</maml:para>
         </dev:remarks>
@@ -602,7 +602,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Suspend-HttpListener $http</dev:code>
+        <dev:code>PS C:\&gt; Suspend-HttpListener $http</dev:code>
         <dev:remarks>
           <maml:para>The $http listener is paused.</maml:para>
         </dev:remarks>
@@ -611,6 +611,269 @@
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>https://docs.microsoft.com/dotnet/api/system.net.httplistener</maml:linkText>
+        <maml:uri>https://docs.microsoft.com/dotnet/api/system.net.httplistener</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Write-WebResponse</command:name>
+      <command:verb>Write</command:verb>
+      <command:noun>WebResponse</command:noun>
+      <maml:description>
+        <maml:para>Sends a text or binary response body to the HTTP listener client.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>{{ Fill in the Description }}</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Write-WebResponse</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Response</maml:name>
+          <maml:Description>
+            <maml:para>The HTTP response to send through.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">HttpListenerResponse</command:parameterValue>
+          <dev:type>
+            <maml:name>HttpListenerResponse</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ContentType</maml:name>
+          <maml:Description>
+            <maml:para>Sets the content type of the response body.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Encoding</maml:name>
+          <maml:Description>
+            <maml:para>Sets an encoding for the response body.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:Description>
+            <maml:para>Data to send as a response body.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>StatusCode</maml:name>
+          <maml:Description>
+            <maml:para>Sets the HTTP response status code.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Continue</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SwitchingProtocols</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Processing</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">EarlyHints</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">OK</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Created</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Accepted</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NonAuthoritativeInformation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NoContent</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ResetContent</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PartialContent</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MultiStatus</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">AlreadyReported</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">IMUsed</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MultipleChoices</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Ambiguous</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MovedPermanently</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Moved</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Found</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Redirect</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SeeOther</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RedirectMethod</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotModified</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UseProxy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Unused</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">TemporaryRedirect</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RedirectKeepVerb</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PermanentRedirect</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">BadRequest</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Unauthorized</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PaymentRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Forbidden</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotFound</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MethodNotAllowed</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotAcceptable</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ProxyAuthenticationRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestTimeout</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Conflict</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Gone</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">LengthRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PreconditionFailed</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestEntityTooLarge</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestUriTooLong</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UnsupportedMediaType</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestedRangeNotSatisfiable</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ExpectationFailed</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MisdirectedRequest</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UnprocessableEntity</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Locked</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">FailedDependency</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UpgradeRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PreconditionRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">TooManyRequests</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestHeaderFieldsTooLarge</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UnavailableForLegalReasons</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">InternalServerError</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotImplemented</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">BadGateway</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ServiceUnavailable</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">GatewayTimeout</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">HttpVersionNotSupported</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">VariantAlsoNegotiates</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">InsufficientStorage</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">LoopDetected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotExtended</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NetworkAuthenticationRequired</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">HttpStatusCode</command:parameterValue>
+          <dev:type>
+            <maml:name>HttpStatusCode</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Response</maml:name>
+        <maml:Description>
+          <maml:para>The HTTP response to send through.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">HttpListenerResponse</command:parameterValue>
+        <dev:type>
+          <maml:name>HttpListenerResponse</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ContentType</maml:name>
+        <maml:Description>
+          <maml:para>Sets the content type of the response body.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Encoding</maml:name>
+        <maml:Description>
+          <maml:para>Sets an encoding for the response body.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>Body</maml:name>
+        <maml:Description>
+          <maml:para>Data to send as a response body.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>StatusCode</maml:name>
+        <maml:Description>
+          <maml:para>Sets the HTTP response status code.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">HttpStatusCode</command:parameterValue>
+        <dev:type>
+          <maml:name>HttpStatusCode</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String containing the text to return to the HTTP client.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>'Success' |Write-WebResponse $httpContext.Response</dev:code>
+        <dev:remarks>
+          <maml:para>Sends the string "Success" to the HTTP listener client as text/plain.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>ConvertTo-Json $data |Write-WebResponse $httpContext.Response -ContentType application/json</dev:code>
+        <dev:remarks>
+          <maml:para>Sends the JSON data to the HTTP listener client.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://docs.microsoft.com/dotnet/api/system.net.httplistener</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
