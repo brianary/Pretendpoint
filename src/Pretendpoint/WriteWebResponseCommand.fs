@@ -33,25 +33,30 @@ type WriteWebResponseCommand () =
     [<Parameter>]
     member val StatusCode : HttpStatusCode = HttpStatusCode.OK with get, set
 
-    override x.ProcessRecord () =
-        base.ProcessRecord ()
+    /// Executes the cmdlet.
+    static member internal Invoke (cmdlet:PSCmdlet) (response:HttpListenerResponse)
+        (body:obj) (encoding:string) (contentType:string) (statusCode:HttpStatusCode) =
         let data =
-            match x.Body with
+            match body with
             | :? PSObject as o ->
                 match o.BaseObject with
                 | :? array<byte> as b ->
-                    if isNull x.ContentType then x.Response.ContentType <- "application/octet-stream"
-                    else x.Response.ContentType <- x.ContentType
+                    if isNull contentType then response.ContentType <- "application/octet-stream"
+                    else response.ContentType <- contentType
                     b
                 | :? string as s ->
-                    if isNull x.ContentType then x.Response.ContentType <- "text/plain"
-                    else x.Response.ContentType <- x.ContentType
-                    x.Response.ContentEncoding <- ReadWebRequestCommand.GetEncoding x.Encoding
-                    x.Response.ContentEncoding.GetBytes s
+                    if isNull contentType then response.ContentType <- "text/plain"
+                    else response.ContentType <- contentType
+                    response.ContentEncoding <- ReadWebRequestCommand.GetEncoding encoding
+                    response.ContentEncoding.GetBytes s
                 | _ -> ErrorRecord (ArgumentException (sprintf "The response body may only be a string or byte array, got '%A'." (o.GetType()), "Body"),
-                                    "BADTYPE", ErrorCategory.InvalidArgument, x.Body) |> x.ThrowTerminatingError; [||]
-            | _ -> ErrorRecord (ArgumentException (sprintf "The response body may only be a string or byte array, got '%A'." (x.Body.GetType()), "Body"),
-                                "BADTYPE", ErrorCategory.InvalidArgument, x.Body) |> x.ThrowTerminatingError; [||]
-        x.Response.StatusCode <- int x.StatusCode
-        x.Response.OutputStream.Write (ReadOnlySpan<byte> data)
-        x.Response.OutputStream.Close ()
+                                    "BADTYPE", ErrorCategory.InvalidArgument, body) |> cmdlet.ThrowTerminatingError; [||]
+            | _ -> ErrorRecord (ArgumentException (sprintf "The response body may only be a string or byte array, got '%A'." (body.GetType()), "Body"),
+                                "BADTYPE", ErrorCategory.InvalidArgument, body) |> cmdlet.ThrowTerminatingError; [||]
+        response.StatusCode <- int statusCode
+        response.OutputStream.Write (ReadOnlySpan<byte> data)
+        response.OutputStream.Close ()
+
+    override x.ProcessRecord () =
+        base.ProcessRecord ()
+        WriteWebResponseCommand.Invoke x x.Response x.Body x.Encoding x.ContentType x.StatusCode

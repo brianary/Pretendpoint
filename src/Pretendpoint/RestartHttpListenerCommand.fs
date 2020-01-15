@@ -14,7 +14,11 @@ type RestartHttpListenerCommand () =
     [<ValidateNotNullOrEmpty>]
     member val Listener : HttpListener = null with get, set
 
+    /// Executes the cmdlet.
+    static member internal Invoke (cmdlet:PSCmdlet) (listener:HttpListener) =
+        if listener.IsListening then listener.Stop ()
+        listener.Start ()
+
     override x.ProcessRecord () =
         base.ProcessRecord ()
-        if x.Listener.IsListening then x.Listener.Stop ()
-        x.Listener.Start ()
+        RestartHttpListenerCommand.Invoke x x.Listener

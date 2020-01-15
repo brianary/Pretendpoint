@@ -53,22 +53,26 @@ type ReadWebRequestCommand () =
     static member internal GetEncoding name =
         Regex.Replace (name, @"\Autf", "utf-") |> Encoding.GetEncoding
 
-    override x.ProcessRecord () =
-        base.ProcessRecord ()
-        Seq.iter x.WriteVerbose [for h in x.Request.Headers -> sprintf "%s: %s" h x.Request.Headers.[h]]
-        if isNull x.Encoding then
+    /// Executes the cmdlet.
+    static member internal Invoke (cmdlet:PSCmdlet) (request:HttpListenerRequest) (encoding:string) =
+        Seq.iter cmdlet.WriteVerbose [for h in request.Headers -> sprintf "%s: %s" h request.Headers.[h]]
+        if isNull encoding then
             //TODO: multipart/alternative, multipart/parallel, multipart/related, multipart/form-data, multipart/*
             // https://stackoverflow.com/a/21689347/54323
             // https://docs.microsoft.com/dotnet/api/system.net.http.streamcontent
             let texty = Regex @"\A(?:(?:text|message)/.*|application/(?:json|(?:.*\+)xml))\z"
-            let contentType = (ContentType x.Request.ContentType).MediaType
+            let contentType = (ContentType request.ContentType).MediaType
             if texty.IsMatch contentType then
-                ReadWebRequestCommand.ReadTextData x x.Request x.Request.ContentEncoding |> x.WriteObject
+                ReadWebRequestCommand.ReadTextData cmdlet request request.ContentEncoding |> cmdlet.WriteObject
             else
-                ReadWebRequestCommand.ReadBinaryData x x.Request |> x.WriteObject
+                ReadWebRequestCommand.ReadBinaryData cmdlet request |> cmdlet.WriteObject
         else
-            if x.Encoding = "byte" then ReadWebRequestCommand.ReadBinaryData x x.Request |> x.WriteObject
+            if encoding = "byte" then ReadWebRequestCommand.ReadBinaryData cmdlet request |> cmdlet.WriteObject
             else
-                ReadWebRequestCommand.GetEncoding x.Encoding
-                    |> ReadWebRequestCommand.ReadTextData x x.Request
-                    |> x.WriteObject
+                ReadWebRequestCommand.GetEncoding encoding
+                    |> ReadWebRequestCommand.ReadTextData cmdlet request
+                    |> cmdlet.WriteObject
+
+    override x.ProcessRecord () =
+        base.ProcessRecord ()
+        ReadWebRequestCommand.Invoke x x.Request x.Encoding

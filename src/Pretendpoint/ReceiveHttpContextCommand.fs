@@ -14,9 +14,13 @@ type ReceieveHttpContextCommand () =
     [<ValidateNotNullOrEmpty>]
     member val Listener : HttpListener = null with get, set
 
+    /// Executes the cmdlet.
+    static member internal Invoke (cmdlet:PSCmdlet) (listener:HttpListener) =
+        if not listener.IsListening then
+            ErrorRecord (InvalidOperationException "The HTTP listener isn't listening.", "NOLISTEN",
+                ErrorCategory.InvalidOperation, listener) |> cmdlet.ThrowTerminatingError
+        listener.GetContext () |> cmdlet.WriteObject
+
     override x.ProcessRecord () =
         base.ProcessRecord ()
-        if not x.Listener.IsListening then
-            ErrorRecord (InvalidOperationException "The HTTP listener isn't listening.", "NOLISTEN",
-                ErrorCategory.InvalidOperation, x.Listener) |> x.ThrowTerminatingError
-        x.Listener.GetContext () |> x.WriteObject
+        ReceieveHttpContextCommand.Invoke x x.Listener

@@ -3,6 +3,7 @@ namespace Pretendpoint
 open System
 open System.Management.Automation
 open System.Net
+open System.Security.Principal
 
 /// Creates and starts an HTTP listener, for testing HTTP clients.
 [<Cmdlet(VerbsLifecycle.Start, "HttpListener")>]
@@ -27,14 +28,25 @@ type StartHttpListenerCommand () =
     [<Parameter>]
     member val IgnoreWriteExceptions : SwitchParameter = (SwitchParameter false) with get, set
 
-    override x.ProcessRecord () =
-        base.ProcessRecord ()
+    /// Determines if the process is running as admin.
+    static member internal IsAdministrator () =
+        (WindowsIdentity.GetCurrent () |> WindowsPrincipal).IsInRole(WindowsBuiltInRole.Administrator)
+
+    /// Executes the cmdlet.
+    static member internal Invoke (cmdlet:PSCmdlet) (port:int array) (auth:AuthenticationSchemes)
+        (realm:string) (ignoreWriteExceptions:bool) =
         if not HttpListener.IsSupported then
             let msg = sprintf "HTTP listeners are not supported on this OS (%s)" Environment.OSVersion.VersionString
             ErrorRecord (InvalidOperationException msg, "NOHTTP", ErrorCategory.InvalidOperation, Environment.OSVersion)
-                |> x.ThrowTerminatingError
-        let listener = new HttpListener (AuthenticationSchemes=x.AuthenticationSchemes)
-        Seq.iter (sprintf "http://*:%d/" >> listener.Prefixes.Add) x.Port
+                |> cmdlet.ThrowTerminatingError
+        if Environment.OSVersion.Platform = PlatformID.Win32NT && (not (StartHttpListenerCommand.IsAdministrator ())) then
+            cmdlet.WriteWarning "Without running as admin, binding an HTTP listener to a port will likely fail."
+        let listener = new HttpListener (AuthenticationSchemes=auth, IgnoreWriteExceptions=ignoreWriteExceptions)
+        Seq.iter (sprintf "http://*:%d/" >> listener.Prefixes.Add) port
         listener.Start ()
-        sprintf "%A" listener |> x.WriteVerbose
-        x.WriteObject listener
+        sprintf "%A" listener |> cmdlet.WriteVerbose
+        cmdlet.WriteObject listener
+
+    override x.ProcessRecord () =
+        base.ProcessRecord ()
+        StartHttpListenerCommand.Invoke x x.Port x.AuthenticationSchemes x.Realm x.IgnoreWriteExceptions.IsPresent

@@ -14,8 +14,12 @@ type StopHttpListenerCommand () =
     [<ValidateNotNullOrEmpty>]
     member val Listener : HttpListener = null with get, set
 
+    /// Executes the cmdlet.
+    static member internal Invoke (cmdlet:PSCmdlet) (listener:HttpListener) =
+        listener.Close ()
+        (listener :> IDisposable).Dispose ()
+        sprintf "%A" listener |> cmdlet.WriteVerbose
+
     override x.ProcessRecord () =
         base.ProcessRecord ()
-        x.Listener.Close ()
-        (x.Listener :> IDisposable).Dispose ()
-        sprintf "%A" x.Listener |> x.WriteVerbose
+        StopHttpListenerCommand.Invoke x x.Listener

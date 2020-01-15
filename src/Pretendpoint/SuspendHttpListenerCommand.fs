@@ -14,6 +14,10 @@ type SuspendHttpListenerCommand () =
     [<ValidateNotNullOrEmpty>]
     member val Listener : HttpListener = null with get, set
 
+    /// Executes the cmdlet.
+    static member internal Invoke (cmdlet:PSCmdlet) (listener:HttpListener) =
+        listener.Stop ()
+
     override x.ProcessRecord () =
         base.ProcessRecord ()
-        x.Listener.Stop ()
+        SuspendHttpListenerCommand.Invoke x x.Listener
