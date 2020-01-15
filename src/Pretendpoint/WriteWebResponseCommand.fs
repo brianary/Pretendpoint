@@ -38,18 +38,23 @@ type WriteWebResponseCommand () =
         (body:obj) (encoding:string) (contentType:string) (statusCode:HttpStatusCode) =
         let data =
             match body with
+            | :? array<byte> as b ->
+                response.ContentType <- if isNull contentType then "application/octet-stream" else contentType
+                b
+            | :? string as s ->
+                response.ContentType <- if isNull contentType then "text/plain" else contentType
+                response.ContentEncoding <- ReadWebRequestCommand.GetEncoding encoding
+                response.ContentEncoding.GetBytes s
             | :? PSObject as o ->
                 match o.BaseObject with
                 | :? array<byte> as b ->
-                    if isNull contentType then response.ContentType <- "application/octet-stream"
-                    else response.ContentType <- contentType
+                    response.ContentType <- if isNull contentType then "application/octet-stream" else contentType
                     b
                 | :? string as s ->
-                    if isNull contentType then response.ContentType <- "text/plain"
-                    else response.ContentType <- contentType
+                    response.ContentType <- if isNull contentType then "text/plain" else contentType
                     response.ContentEncoding <- ReadWebRequestCommand.GetEncoding encoding
                     response.ContentEncoding.GetBytes s
-                | _ -> ErrorRecord (ArgumentException (sprintf "The response body may only be a string or byte array, got '%A'." (o.GetType()), "Body"),
+                | _ -> ErrorRecord (ArgumentException (sprintf "The response body may only be a string or byte array, got PSObject of '%A'." (o.GetType()), "Body"),
                                     "BADTYPE", ErrorCategory.InvalidArgument, body) |> cmdlet.ThrowTerminatingError; [||]
             | _ -> ErrorRecord (ArgumentException (sprintf "The response body may only be a string or byte array, got '%A'." (body.GetType()), "Body"),
                                 "BADTYPE", ErrorCategory.InvalidArgument, body) |> cmdlet.ThrowTerminatingError; [||]

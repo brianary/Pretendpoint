@@ -40,11 +40,11 @@ type GetWebRequestBodyCommand () =
     member val Response : ScriptBlock = null with get, set
 
     override x.ProcessRecord () =
-        base.ProcessRecord ()
+        x.PSCmdletProcessRecord ()
         let http = StartHttpListenerCommand.Invoke x x.Port x.AuthenticationSchemes x.Realm x.IgnoreWriteExceptions.IsPresent
+        sprintf "Listening: %A" http |> x.WriteVerbose
         let context = ReceieveHttpContextCommand.Invoke x http
-        ReadWebRequestCommand.Invoke x context.Request x.Encoding
-            |> x.WriteObject
+        ReadWebRequestCommand.Invoke x context.Request x.Encoding |> x.WriteObject
         if x.ParameterSetName = "DynamicResponse" then
             x.Response.Invoke(context) |> ignore
             if context.Response.OutputStream.CanWrite then

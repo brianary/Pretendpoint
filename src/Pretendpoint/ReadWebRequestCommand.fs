@@ -67,11 +67,8 @@ type ReadWebRequestCommand () =
                 (ReadWebRequestCommand.ReadTextData cmdlet request request.ContentEncoding) :> obj
             else
                 (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
-        else
-            if encoding = "byte" then (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
-            else
-                (ReadWebRequestCommand.GetEncoding encoding
-                    |> ReadWebRequestCommand.ReadTextData cmdlet request) :> obj
+        elif encoding = "byte" then (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
+        else (ReadWebRequestCommand.GetEncoding encoding |> ReadWebRequestCommand.ReadTextData cmdlet request) :> obj
 
     override x.ProcessRecord () =
         base.ProcessRecord ()

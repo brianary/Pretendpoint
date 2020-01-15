@@ -47,7 +47,10 @@ type StartHttpListenerCommand () =
         sprintf "%A" listener |> cmdlet.WriteVerbose
         listener
 
-    override x.ProcessRecord () =
+    member internal x.PSCmdletProcessRecord () =
         base.ProcessRecord ()
+
+    override x.ProcessRecord () =
+        x.PSCmdletProcessRecord ()
         StartHttpListenerCommand.Invoke x x.Port x.AuthenticationSchemes x.Realm x.IgnoreWriteExceptions.IsPresent
             |> x.WriteObject
