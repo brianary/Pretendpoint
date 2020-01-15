@@ -2,6 +2,485 @@
 <helpItems schema="maml" xmlns="http://msh">
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-WebRequestBody</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>WebRequestBody</command:noun>
+      <maml:description>
+        <maml:para>Starts an HTTP listener to receive a single request, whose body is returned, supporting static or dynamic respnoses.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>{{ Fill in the Description }}</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-WebRequestBody</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Port</maml:name>
+          <maml:Description>
+            <maml:para>Ports on the localhost to bind to.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32[]</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>AuthenticationSchemes</maml:name>
+          <maml:Description>
+            <maml:para>Client authentication methods to support.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">None</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Digest</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Negotiate</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Ntlm</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">IntegratedWindowsAuthentication</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Basic</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Anonymous</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">AuthenticationSchemes</command:parameterValue>
+          <dev:type>
+            <maml:name>AuthenticationSchemes</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:Description>
+            <maml:para>Data to send as a response body.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ContentType</maml:name>
+          <maml:Description>
+            <maml:para>Sets the content type of the response body.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Incoding">
+          <maml:name>Encoding</maml:name>
+          <maml:Description>
+            <maml:para>Forces an encoding for the request body; Byte for binary, others for text.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">byte</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf7</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf8</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>IgnoreWriteExceptions</maml:name>
+          <maml:Description>
+            <maml:para>Indicates that response writes shouldn't generate exceptions.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Realm</maml:name>
+          <maml:Description>
+            <maml:para>The RFC2617 authentication realm.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Outcoding">
+          <maml:name>ResponseEncoding</maml:name>
+          <maml:Description>
+            <maml:para>Sets an encoding for the response body.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf7</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf8</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>StatusCode</maml:name>
+          <maml:Description>
+            <maml:para>Sets the HTTP response status code.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Continue</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SwitchingProtocols</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Processing</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">EarlyHints</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">OK</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Created</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Accepted</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NonAuthoritativeInformation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NoContent</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ResetContent</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PartialContent</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MultiStatus</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">AlreadyReported</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">IMUsed</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MultipleChoices</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Ambiguous</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MovedPermanently</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Moved</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Found</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Redirect</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SeeOther</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RedirectMethod</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotModified</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UseProxy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Unused</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">TemporaryRedirect</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RedirectKeepVerb</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PermanentRedirect</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">BadRequest</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Unauthorized</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PaymentRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Forbidden</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotFound</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MethodNotAllowed</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotAcceptable</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ProxyAuthenticationRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestTimeout</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Conflict</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Gone</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">LengthRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PreconditionFailed</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestEntityTooLarge</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestUriTooLong</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UnsupportedMediaType</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestedRangeNotSatisfiable</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ExpectationFailed</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MisdirectedRequest</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UnprocessableEntity</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Locked</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">FailedDependency</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UpgradeRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PreconditionRequired</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">TooManyRequests</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RequestHeaderFieldsTooLarge</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UnavailableForLegalReasons</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">InternalServerError</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotImplemented</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">BadGateway</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ServiceUnavailable</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">GatewayTimeout</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">HttpVersionNotSupported</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">VariantAlsoNegotiates</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">InsufficientStorage</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">LoopDetected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NotExtended</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NetworkAuthenticationRequired</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">HttpStatusCode</command:parameterValue>
+          <dev:type>
+            <maml:name>HttpStatusCode</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-WebRequestBody</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Port</maml:name>
+          <maml:Description>
+            <maml:para>Ports on the localhost to bind to.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Int32[]</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>AuthenticationSchemes</maml:name>
+          <maml:Description>
+            <maml:para>Client authentication methods to support.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">None</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Digest</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Negotiate</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Ntlm</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">IntegratedWindowsAuthentication</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Basic</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Anonymous</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">AuthenticationSchemes</command:parameterValue>
+          <dev:type>
+            <maml:name>AuthenticationSchemes</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Incoding">
+          <maml:name>Encoding</maml:name>
+          <maml:Description>
+            <maml:para>Forces an encoding for the request body; Byte for binary, others for text.</maml:para>
+          </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">byte</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf7</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf8</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>IgnoreWriteExceptions</maml:name>
+          <maml:Description>
+            <maml:para>Indicates that response writes shouldn't generate exceptions.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Realm</maml:name>
+          <maml:Description>
+            <maml:para>The RFC2617 authentication realm.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Response</maml:name>
+          <maml:Description>
+            <maml:para>A script block that accepts an HttpListenerContext parameter to respond with.</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">ScriptBlock</command:parameterValue>
+          <dev:type>
+            <maml:name>ScriptBlock</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Port</maml:name>
+        <maml:Description>
+          <maml:para>Ports on the localhost to bind to.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Int32[]</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>AuthenticationSchemes</maml:name>
+        <maml:Description>
+          <maml:para>Client authentication methods to support.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">AuthenticationSchemes</command:parameterValue>
+        <dev:type>
+          <maml:name>AuthenticationSchemes</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>Body</maml:name>
+        <maml:Description>
+          <maml:para>Data to send as a response body.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ContentType</maml:name>
+        <maml:Description>
+          <maml:para>Sets the content type of the response body.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Incoding">
+        <maml:name>Encoding</maml:name>
+        <maml:Description>
+          <maml:para>Forces an encoding for the request body; Byte for binary, others for text.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>IgnoreWriteExceptions</maml:name>
+        <maml:Description>
+          <maml:para>Indicates that response writes shouldn't generate exceptions.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Realm</maml:name>
+        <maml:Description>
+          <maml:para>The RFC2617 authentication realm.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Response</maml:name>
+        <maml:Description>
+          <maml:para>A script block that accepts an HttpListenerContext parameter to respond with.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">ScriptBlock</command:parameterValue>
+        <dev:type>
+          <maml:name>ScriptBlock</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Outcoding">
+        <maml:name>ResponseEncoding</maml:name>
+        <maml:Description>
+          <maml:para>Sets an encoding for the response body.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>StatusCode</maml:name>
+        <maml:Description>
+          <maml:para>Sets the HTTP response status code.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">HttpStatusCode</command:parameterValue>
+        <dev:type>
+          <maml:name>HttpStatusCode</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Int32[]</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-WebRequestBody -Port 8080</dev:code>
+        <dev:remarks>
+          <maml:para>Waits for a request to http://localhost:8080/ , prints out the request body, and returns an HTTP 204.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Read-WebRequest</command:name>
       <command:verb>Read</command:verb>
       <command:noun>WebRequest</command:noun>
@@ -27,6 +506,18 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Encoding</maml:name>
+          <maml:Description>
+            <maml:para>{{ Fill Encoding Description }}</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -38,6 +529,18 @@
         <command:parameterValue required="true" variableLength="false">HttpListenerRequest</command:parameterValue>
         <dev:type>
           <maml:name>HttpListenerRequest</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Encoding</maml:name>
+        <maml:Description>
+          <maml:para>{{ Fill Encoding Description }}</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

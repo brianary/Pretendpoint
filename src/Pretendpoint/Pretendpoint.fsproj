@@ -12,6 +12,7 @@
     <Compile Include="StopHttpListenerCommand.fs" />
     <Compile Include="SuspendHttpListenerCommand.fs" />
     <Compile Include="WriteWebResponseCommand.fs" />
+    <Compile Include="GetWebRequestBodyCommand.fs" />
   </ItemGroup>
 
   <ItemGroup>

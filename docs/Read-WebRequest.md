@@ -13,7 +13,7 @@ Parses an HTTP listener request.
 ## SYNTAX
 
 ```
-Read-WebRequest [-Request] <HttpListenerRequest> [<CommonParameters>]
+Read-WebRequest [-Request] <HttpListenerRequest> [-Encoding <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -42,6 +42,21 @@ Required: True
 Position: 0
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Encoding
+{{ Fill Encoding Description }}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

@@ -19,8 +19,9 @@ type ReceieveHttpContextCommand () =
         if not listener.IsListening then
             ErrorRecord (InvalidOperationException "The HTTP listener isn't listening.", "NOLISTEN",
                 ErrorCategory.InvalidOperation, listener) |> cmdlet.ThrowTerminatingError
-        listener.GetContext () |> cmdlet.WriteObject
+        listener.GetContext ()
 
     override x.ProcessRecord () =
         base.ProcessRecord ()
         ReceieveHttpContextCommand.Invoke x x.Listener
+            |> x.WriteObject

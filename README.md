@@ -13,6 +13,7 @@ Cmdlets
 
 Documentation is automatically generated using [platyPS](https://github.com/PowerShell/platyPS).
 
+- [Get-WebRequestBody](docs/Get-WebRequestBody.md)
 - [Read-WebRequest](docs/Read-WebRequest.md)
 - [Receive-HttpContext](docs/Receive-HttpContext.md)
 - [Restart-HttpListener](docs/Restart-HttpListener.md)

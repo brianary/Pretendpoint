@@ -45,8 +45,9 @@ type StartHttpListenerCommand () =
         Seq.iter (sprintf "http://*:%d/" >> listener.Prefixes.Add) port
         listener.Start ()
         sprintf "%A" listener |> cmdlet.WriteVerbose
-        cmdlet.WriteObject listener
+        listener
 
     override x.ProcessRecord () =
         base.ProcessRecord ()
         StartHttpListenerCommand.Invoke x x.Port x.AuthenticationSchemes x.Realm x.IgnoreWriteExceptions.IsPresent
+            |> x.WriteObject

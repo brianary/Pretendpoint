@@ -19,6 +19,7 @@ type ReadWebRequestCommand () =
     member val Request : HttpListenerRequest = null with get, set
 
     /// Forces an encoding for the request body; Byte for binary, others for text.
+    [<Parameter>]
     [<ValidateSet("ascii","byte","utf16","utf16BE","utf32","utf32BE","utf7","utf8")>]
     member val Encoding : string = null with get, set
 
@@ -63,16 +64,16 @@ type ReadWebRequestCommand () =
             let texty = Regex @"\A(?:(?:text|message)/.*|application/(?:json|(?:.*\+)xml))\z"
             let contentType = (ContentType request.ContentType).MediaType
             if texty.IsMatch contentType then
-                ReadWebRequestCommand.ReadTextData cmdlet request request.ContentEncoding |> cmdlet.WriteObject
+                (ReadWebRequestCommand.ReadTextData cmdlet request request.ContentEncoding) :> obj
             else
-                ReadWebRequestCommand.ReadBinaryData cmdlet request |> cmdlet.WriteObject
+                (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
         else
-            if encoding = "byte" then ReadWebRequestCommand.ReadBinaryData cmdlet request |> cmdlet.WriteObject
+            if encoding = "byte" then (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
             else
-                ReadWebRequestCommand.GetEncoding encoding
-                    |> ReadWebRequestCommand.ReadTextData cmdlet request
-                    |> cmdlet.WriteObject
+                (ReadWebRequestCommand.GetEncoding encoding
+                    |> ReadWebRequestCommand.ReadTextData cmdlet request) :> obj
 
     override x.ProcessRecord () =
         base.ProcessRecord ()
         ReadWebRequestCommand.Invoke x x.Request x.Encoding
+            |> x.WriteObject
