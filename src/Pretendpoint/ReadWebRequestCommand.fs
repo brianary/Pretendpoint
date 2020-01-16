@@ -18,10 +18,14 @@ type ReadWebRequestCommand () =
     [<ValidateNotNullOrEmpty>]
     member val Request : HttpListenerRequest = null with get, set
 
-    /// Forces an encoding for the request body; Byte for binary, others for text.
+    /// Forces an encoding for the request body; byte or hex for binary, others for text.
     [<Parameter>]
-    [<ValidateSet("ascii","byte","utf16","utf16BE","utf32","utf32BE","utf7","utf8")>]
+    [<ValidateSet("ascii","byte","hex","utf16","utf16BE","utf32","utf32BE","utf7","utf8")>]
     member val Encoding : string = null with get, set
+
+    /// Indicates that the HTTP request headers should be output.
+    [<Parameter>]
+    member val IncludeHeaders : SwitchParameter = SwitchParameter false with get, set
 
     /// Reads a binary body from a request, with cmdlet integration.
     static member internal ReadBinaryData (cmdlet:PSCmdlet) (request:HttpListenerRequest) =
@@ -55,8 +59,15 @@ type ReadWebRequestCommand () =
         Regex.Replace (name, @"\Autf", "utf-") |> Encoding.GetEncoding
 
     /// Executes the cmdlet.
-    static member internal Invoke (cmdlet:PSCmdlet) (request:HttpListenerRequest) (encoding:string) =
-        Seq.iter cmdlet.WriteVerbose [for h in request.Headers -> sprintf "%s: %s" h request.Headers.[h]]
+    static member internal Invoke (cmdlet:PSCmdlet) (request:HttpListenerRequest) (encoding:string) (includeHeaders:bool) =
+        if includeHeaders then
+            sprintf "%s %A" request.HttpMethod request.Url |> cmdlet.WriteObject
+            request.Headers.AllKeys
+                |> Seq.map (fun k -> sprintf "%s: %s" k request.Headers.[k])
+                |> Seq.iter cmdlet.WriteObject
+            cmdlet.WriteObject ""
+        else
+            Seq.iter cmdlet.WriteVerbose [for h in request.Headers -> sprintf "%s: %s" h request.Headers.[h]]
         if isNull encoding then
             //TODO: multipart/alternative, multipart/parallel, multipart/related, multipart/form-data, multipart/*
             // https://stackoverflow.com/a/21689347/54323
@@ -67,10 +78,14 @@ type ReadWebRequestCommand () =
                 (ReadWebRequestCommand.ReadTextData cmdlet request request.ContentEncoding) :> obj
             else
                 (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
+        elif encoding = "hex" then
+            (ReadWebRequestCommand.ReadBinaryData cmdlet request)
+                |> Array.map (sprintf "%2x")
+                |> (fun b -> String.Join(" ",b) :> obj)
         elif encoding = "byte" then (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
         else (ReadWebRequestCommand.GetEncoding encoding |> ReadWebRequestCommand.ReadTextData cmdlet request) :> obj
 
     override x.ProcessRecord () =
         base.ProcessRecord ()
-        ReadWebRequestCommand.Invoke x x.Request x.Encoding
+        ReadWebRequestCommand.Invoke x x.Request x.Encoding x.IncludeHeaders.IsPresent
             |> x.WriteObject

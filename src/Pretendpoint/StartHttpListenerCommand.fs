@@ -44,7 +44,11 @@ type StartHttpListenerCommand () =
         let listener = new HttpListener (AuthenticationSchemes=auth, IgnoreWriteExceptions=ignoreWriteExceptions)
         Seq.iter (sprintf "http://*:%d/" >> listener.Prefixes.Add) port
         listener.Start ()
-        sprintf "%A" listener |> cmdlet.WriteVerbose
+        (if listener.IsListening then "Listening on HTTP" else "Not listening on HTTP") |> cmdlet.WriteVerbose
+        sprintf "Authentication: %A, realm: %s, default SPNs: %A" listener.AuthenticationSchemes listener.Realm listener.DefaultServiceNames
+            |> cmdlet.WriteVerbose
+        sprintf "Extended protection: %A" listener.ExtendedProtectionPolicy |> cmdlet.WriteVerbose
+        listener.Prefixes |> Seq.iter (sprintf "Bound to '%s'" >> cmdlet.WriteVerbose)
         listener
 
     member internal x.PSCmdletProcessRecord () =

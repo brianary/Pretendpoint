@@ -8,7 +8,10 @@ GUID = '99dd8a26-0a66-4c4f-99e2-0a7e01e3af51'
 Author = 'Brian Lalonde'
 #CompanyName = 'Unknown'
 Copyright = 'Copyright © 2020 Brian Lalonde'
-Description = 'A minimal set of PowerShell cmdlets to use an HTTP test server/endpoint for inspecting or debugging client requests.'
+Description = @'
+The Pretend Endpoint, the disposable web server.
+A set of PowerShell cmdlets to create an HTTP test server/endpoint for inspecting or debugging client requests.
+'@
 PowerShellVersion = '6.0'
 FunctionsToExport = @()
 CmdletsToExport = @(

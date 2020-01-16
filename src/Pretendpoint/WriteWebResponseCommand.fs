@@ -38,6 +38,7 @@ type WriteWebResponseCommand () =
         (body:obj) (encoding:string) (contentType:string) (statusCode:HttpStatusCode) =
         let data =
             match body with
+            | null -> [||]
             | :? array<byte> as b ->
                 response.ContentType <- if isNull contentType then "application/octet-stream" else contentType
                 b

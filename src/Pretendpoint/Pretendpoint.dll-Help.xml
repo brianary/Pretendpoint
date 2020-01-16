@@ -75,7 +75,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Incoding">
           <maml:name>Encoding</maml:name>
           <maml:Description>
-            <maml:para>Forces an encoding for the request body; Byte for binary, others for text.</maml:para>
+            <maml:para>Forces an encoding for the request body; byte or hex for binary, others for text.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
@@ -218,6 +218,17 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>IncludeHeaders</maml:name>
+          <maml:Description>
+            <maml:para>Indicates that the HTTP request headers should be output.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-WebRequestBody</maml:name>
@@ -257,7 +268,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Incoding">
           <maml:name>Encoding</maml:name>
           <maml:Description>
-            <maml:para>Forces an encoding for the request body; Byte for binary, others for text.</maml:para>
+            <maml:para>Forces an encoding for the request body; byte or hex for binary, others for text.</maml:para>
           </maml:Description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
@@ -310,6 +321,17 @@
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>IncludeHeaders</maml:name>
+          <maml:Description>
+            <maml:para>Indicates that the HTTP request headers should be output.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -365,7 +387,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Incoding">
         <maml:name>Encoding</maml:name>
         <maml:Description>
-          <maml:para>Forces an encoding for the request body; Byte for binary, others for text.</maml:para>
+          <maml:para>Forces an encoding for the request body; byte or hex for binary, others for text.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -433,6 +455,18 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>IncludeHeaders</maml:name>
+        <maml:Description>
+          <maml:para>Indicates that the HTTP request headers should be output.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -509,7 +543,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Encoding</maml:name>
           <maml:Description>
-            <maml:para>{{ Fill Encoding Description }}</maml:para>
+            <maml:para>Forces an encoding for the request body; byte or hex for binary, others for text.</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -517,6 +551,17 @@
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>IncludeHeaders</maml:name>
+          <maml:Description>
+            <maml:para>Indicates that the HTTP request headers should be output.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -536,7 +581,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Encoding</maml:name>
         <maml:Description>
-          <maml:para>{{ Fill Encoding Description }}</maml:para>
+          <maml:para>Forces an encoding for the request body; byte or hex for binary, others for text.</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -544,6 +589,18 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>IncludeHeaders</maml:name>
+        <maml:Description>
+          <maml:para>Indicates that the HTTP request headers should be output.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>

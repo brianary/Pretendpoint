@@ -6,21 +6,30 @@ Pretendpoint
 
 [![Actions Status](https://github.com/brianary/Pretendpoint/workflows/.NET%20Core/badge.svg)](https://github.com/brianary/Pretendpoint/actions)
 
-A minimal set of PowerShell cmdlets to use an HTTP test server/endpoint for inspecting or debugging client requests.
+Pretend Endpoint, the disposable web server.
+A set of PowerShell cmdlets to create an HTTP test server/endpoint for inspecting or debugging client requests.
 
 Cmdlets
 -------
 
 Documentation is automatically generated using [platyPS](https://github.com/PowerShell/platyPS).
 
-- [Get-WebRequestBody](docs/Get-WebRequestBody.md)
-- [Read-WebRequest](docs/Read-WebRequest.md)
-- [Receive-HttpContext](docs/Receive-HttpContext.md)
-- [Restart-HttpListener](docs/Restart-HttpListener.md)
-- [Start-HttpListener](docs/Start-HttpListener.md)
-- [Stop-HttpListener](docs/Stop-HttpListener.md)
-- [Suspend-HttpListener](docs/Suspend-HttpListener.md)
-- [Write-WebResponse](docs/Write-WebResponse.md)
+- [Get-WebRequestBody](docs/Get-WebRequestBody.md) &mdash;
+  Starts an HTTP listener to receive a single request, whose body is returned, supporting static or dynamic respnoses.
+- [Read-WebRequest](docs/Read-WebRequest.md) &mdash;
+  Parses an HTTP listener request.
+- [Receive-HttpContext](docs/Receive-HttpContext.md) &mdash;
+  Listens for an HTTP request and returns an HTTP request & response.
+- [Restart-HttpListener](docs/Restart-HttpListener.md) &mdash;
+  Stops and restarts an HTTP listener.
+- [Start-HttpListener](docs/Start-HttpListener.md) &mdash;
+  Ports on the localhost to bind to.
+- [Stop-HttpListener](docs/Stop-HttpListener.md) &mdash;
+  Closes an HTTP listener.
+- [Suspend-HttpListener](docs/Suspend-HttpListener.md) &mdash;
+  Pauses an HTTP listener.
+- [Write-WebResponse](docs/Write-WebResponse.md) &mdash;
+  Sends a text or binary response body to the HTTP listener client.
 
 Tests
 -----

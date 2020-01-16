@@ -15,13 +15,14 @@ Starts an HTTP listener to receive a single request, whose body is returned, sup
 ### StaticResponse
 ```
 Get-WebRequestBody [-Encoding <String>] [-Body <Object>] [-ResponseEncoding <String>] [-ContentType <String>]
- [-StatusCode <HttpStatusCode>] [-Port] <Int32[]> [-AuthenticationSchemes <AuthenticationSchemes>]
- [-Realm <String>] [-IgnoreWriteExceptions] [<CommonParameters>]
+ [-StatusCode <HttpStatusCode>] [-IncludeHeaders] [-Port] <Int32[]>
+ [-AuthenticationSchemes <AuthenticationSchemes>] [-Realm <String>] [-IgnoreWriteExceptions]
+ [<CommonParameters>]
 ```
 
 ### DynamicResponse
 ```
-Get-WebRequestBody [-Encoding <String>] -Response <ScriptBlock> [-Port] <Int32[]>
+Get-WebRequestBody [-Encoding <String>] -Response <ScriptBlock> [-IncludeHeaders] [-Port] <Int32[]>
  [-AuthenticationSchemes <AuthenticationSchemes>] [-Realm <String>] [-IgnoreWriteExceptions]
  [<CommonParameters>]
 ```
@@ -102,7 +103,7 @@ Accept wildcard characters: False
 ```
 
 ### -Encoding
-Forces an encoding for the request body; Byte for binary, others for text.
+Forces an encoding for the request body; byte or hex for binary, others for text.
 
 ```yaml
 Type: String
@@ -186,6 +187,21 @@ Type: HttpStatusCode
 Parameter Sets: StaticResponse
 Aliases:
 Accepted values: Continue, SwitchingProtocols, Processing, EarlyHints, OK, Created, Accepted, NonAuthoritativeInformation, NoContent, ResetContent, PartialContent, MultiStatus, AlreadyReported, IMUsed, MultipleChoices, Ambiguous, MovedPermanently, Moved, Found, Redirect, SeeOther, RedirectMethod, NotModified, UseProxy, Unused, TemporaryRedirect, RedirectKeepVerb, PermanentRedirect, BadRequest, Unauthorized, PaymentRequired, Forbidden, NotFound, MethodNotAllowed, NotAcceptable, ProxyAuthenticationRequired, RequestTimeout, Conflict, Gone, LengthRequired, PreconditionFailed, RequestEntityTooLarge, RequestUriTooLong, UnsupportedMediaType, RequestedRangeNotSatisfiable, ExpectationFailed, MisdirectedRequest, UnprocessableEntity, Locked, FailedDependency, UpgradeRequired, PreconditionRequired, TooManyRequests, RequestHeaderFieldsTooLarge, UnavailableForLegalReasons, InternalServerError, NotImplemented, BadGateway, ServiceUnavailable, GatewayTimeout, HttpVersionNotSupported, VariantAlsoNegotiates, InsufficientStorage, LoopDetected, NotExtended, NetworkAuthenticationRequired
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeHeaders
+Indicates that the HTTP request headers should be output.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

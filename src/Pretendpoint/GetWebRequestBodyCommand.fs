@@ -9,9 +9,9 @@ open System.Net
 type GetWebRequestBodyCommand () =
     inherit StartHttpListenerCommand ()
 
-    /// Forces an encoding for the request body; Byte for binary, others for text.
+    /// Forces an encoding for the request body; byte or hex for binary, others for text.
     [<Parameter>]
-    [<ValidateSet("ascii","byte","utf16","utf16BE","utf32","utf32BE","utf7","utf8")>]
+    [<ValidateSet("ascii","byte","hex","utf16","utf16BE","utf32","utf32BE","utf7","utf8")>]
     [<Alias("Incoding")>]
     member val Encoding : string = null with get, set
 
@@ -39,16 +39,21 @@ type GetWebRequestBodyCommand () =
     [<Parameter(ParameterSetName="DynamicResponse", Mandatory=true)>]
     member val Response : ScriptBlock = null with get, set
 
+    /// Indicates that the HTTP request headers should be output.
+    [<Parameter>]
+    member val IncludeHeaders : SwitchParameter = SwitchParameter false with get, set
+
     override x.ProcessRecord () =
         x.PSCmdletProcessRecord ()
         let http = StartHttpListenerCommand.Invoke x x.Port x.AuthenticationSchemes x.Realm x.IgnoreWriteExceptions.IsPresent
-        sprintf "Listening: %A" http |> x.WriteVerbose
         let context = ReceieveHttpContextCommand.Invoke x http
-        ReadWebRequestCommand.Invoke x context.Request x.Encoding |> x.WriteObject
+        ReadWebRequestCommand.Invoke x context.Request x.Encoding x.IncludeHeaders.IsPresent |> x.WriteObject
         if x.ParameterSetName = "DynamicResponse" then
+            x.WriteVerbose "Invoking dynamic response"
             x.Response.Invoke(context) |> ignore
             if context.Response.OutputStream.CanWrite then
                 context.Response.OutputStream.Close ()
         else
+            sprintf "Returning static HTTP %d %A %s response" (int x.StatusCode) x.StatusCode x.ContentType |> x.WriteVerbose
             WriteWebResponseCommand.Invoke x context.Response x.Body x.ResponseEncoding x.ContentType x.StatusCode
         StopHttpListenerCommand.Invoke x http

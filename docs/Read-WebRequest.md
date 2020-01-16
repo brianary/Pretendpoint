@@ -13,7 +13,7 @@ Parses an HTTP listener request.
 ## SYNTAX
 
 ```
-Read-WebRequest [-Request] <HttpListenerRequest> [-Encoding <String>] [<CommonParameters>]
+Read-WebRequest [-Request] <HttpListenerRequest> [-Encoding <String>] [-IncludeHeaders] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -46,10 +46,25 @@ Accept wildcard characters: False
 ```
 
 ### -Encoding
-{{ Fill Encoding Description }}
+Forces an encoding for the request body; byte or hex for binary, others for text.
 
 ```yaml
 Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeHeaders
+Indicates that the HTTP request headers should be output.
+
+```yaml
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
