@@ -22,6 +22,7 @@ type WriteWebResponseCommand () =
     /// Sets an encoding for the response body.
     [<Parameter>]
     [<ValidateSet("ascii","utf16","utf16BE","utf32","utf32BE","utf7","utf8")>]
+    [<Alias("Outcoding")>] // ;)
     member val Encoding : string = "utf8" with get, set
 
     /// Sets the content type of the response body.

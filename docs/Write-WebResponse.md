@@ -74,7 +74,8 @@ Sets an encoding for the response body.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: Outcoding
+Accepted values: ascii, utf16, utf16BE, utf32, utf32BE, utf7, utf8
 
 Required: False
 Position: Named

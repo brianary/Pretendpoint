@@ -80,6 +80,7 @@
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">byte</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">hex</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">utf16</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">utf16BE</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">utf32</command:parameterValue>
@@ -273,6 +274,7 @@
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">byte</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">hex</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">utf16</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">utf16BE</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">utf32</command:parameterValue>
@@ -540,11 +542,22 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Incoding">
           <maml:name>Encoding</maml:name>
           <maml:Description>
             <maml:para>Forces an encoding for the request body; byte or hex for binary, others for text.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">byte</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">hex</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf7</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf8</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -578,7 +591,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Incoding">
         <maml:name>Encoding</maml:name>
         <maml:Description>
           <maml:para>Forces an encoding for the request body; byte or hex for binary, others for text.</maml:para>
@@ -1214,11 +1227,20 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Outcoding">
           <maml:name>Encoding</maml:name>
           <maml:Description>
             <maml:para>Sets an encoding for the response body.</maml:para>
           </maml:Description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">ascii</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf16BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf32BE</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf7</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">utf8</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1345,7 +1367,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Outcoding">
         <maml:name>Encoding</maml:name>
         <maml:Description>
           <maml:para>Sets an encoding for the response body.</maml:para>

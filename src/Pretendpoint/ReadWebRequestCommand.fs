@@ -21,6 +21,7 @@ type ReadWebRequestCommand () =
     /// Forces an encoding for the request body; byte or hex for binary, others for text.
     [<Parameter>]
     [<ValidateSet("ascii","byte","hex","utf16","utf16BE","utf32","utf32BE","utf7","utf8")>]
+    [<Alias("Incoding")>]
     member val Encoding : string = null with get, set
 
     /// Indicates that the HTTP request headers should be output.

@@ -109,7 +109,7 @@ Forces an encoding for the request body; byte or hex for binary, others for text
 Type: String
 Parameter Sets: (All)
 Aliases: Incoding
-Accepted values: ascii, byte, utf16, utf16BE, utf32, utf32BE, utf7, utf8
+Accepted values: ascii, byte, hex, utf16, utf16BE, utf32, utf32BE, utf7, utf8
 
 Required: False
 Position: Named
