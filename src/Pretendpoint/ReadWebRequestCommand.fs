@@ -30,26 +30,24 @@ type ReadWebRequestCommand () =
 
     /// Reads a binary body from a request, with cmdlet integration.
     static member internal ReadBinaryData (cmdlet:PSCmdlet) (request:HttpListenerRequest) =
-        if not request.HasEntityBody then [||]
+        if not request.InputStream.CanRead then
+            ErrorRecord (InvalidOperationException "Unable to read HTTP request.", "NOREAD",
+                ErrorCategory.InvalidOperation, request) |> cmdlet.ThrowTerminatingError
+        if request.ContentLength64 < 1L then
+            cmdlet.WriteVerbose "Reading 1KB blocks"
+            let readBlock (stream:Stream) =
+                cmdlet.WriteVerbose "Reading 1KB"
+                let block = Array.create 1024 0uy
+                if stream.Read(Span<byte> block) = 0 then None
+                else Some(block, stream)
+            Seq.unfold readBlock request.InputStream |> Array.concat
         else
-            if not request.InputStream.CanRead then
-                ErrorRecord (InvalidOperationException "Unable to read HTTP request.", "NOREAD",
+            sprintf "Reading %d bytes" request.ContentLength64 |> cmdlet.WriteVerbose
+            let data = Array.create (int request.ContentLength64) 0uy
+            if request.InputStream.Read(Span<byte> data) = 0 then
+                ErrorRecord (InvalidOperationException "No data read from HTTP request.", "ZEROREAD",
                     ErrorCategory.InvalidOperation, request) |> cmdlet.ThrowTerminatingError
-            if request.ContentLength64 < 1L then
-                cmdlet.WriteVerbose "Reading 1KB blocks"
-                let readBlock (stream:Stream) =
-                    cmdlet.WriteVerbose "Reading 1KB"
-                    let block = Array.create 1024 0uy
-                    if stream.Read(Span<byte> block) = 0 then None
-                    else Some(block, stream)
-                Seq.unfold readBlock request.InputStream |> Array.concat
-            else
-                sprintf "Reading %d bytes" request.ContentLength64 |> cmdlet.WriteVerbose
-                let data = Array.create (int request.ContentLength64) 0uy
-                if request.InputStream.Read(Span<byte> data) = 0 then
-                    ErrorRecord (InvalidOperationException "No data read from HTTP request.", "ZEROREAD",
-                        ErrorCategory.InvalidOperation, request) |> cmdlet.ThrowTerminatingError
-                data
+            data
 
     /// Reads a text body from a request.
     static member internal ReadTextData (cmdlet:PSCmdlet) (request:HttpListenerRequest) (encoding:Encoding) =
@@ -68,8 +66,14 @@ type ReadWebRequestCommand () =
                 |> Seq.iter cmdlet.WriteObject
             cmdlet.WriteObject ""
         else
+            cmdlet.WriteVerbose "Request:"
+            sprintf "%s %A" request.HttpMethod request.Url |> cmdlet.WriteVerbose
             Seq.iter cmdlet.WriteVerbose [for h in request.Headers -> sprintf "%s: %s" h request.Headers.[h]]
-        if isNull encoding then
+        if not (request.HasEntityBody && request.InputStream.CanRead) then
+            [||] :> obj
+        elif isNull request.ContentType then
+            (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
+        elif isNull encoding then
             //TODO: multipart/alternative, multipart/parallel, multipart/related, multipart/form-data, multipart/*
             // https://stackoverflow.com/a/21689347/54323
             // https://docs.microsoft.com/dotnet/api/system.net.http.streamcontent

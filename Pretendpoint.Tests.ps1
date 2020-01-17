@@ -41,7 +41,7 @@ Describe 'Pretendpoint' {
         } -Skip:$notAdmin
     }
     Context 'Suspend-HttpListener cmdlet' {
-        It "Given an HTTP Listener bound to port <Port>, it should stop listening." -TestCases $tests {
+        It "Stops listening." -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $Listener |Suspend-HttpListener
@@ -61,7 +61,7 @@ Describe 'Pretendpoint' {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
-                "& { Invoke-WebRequest http://localhost:$Port/ -Body '$Data' -ContentType text/plain }" -WindowStyle Hidden -PassThru
+                "& { Invoke-WebRequest http://localhost:$Port/ -Method Post -ContentType text/plain -Body '$Data' }" -WindowStyle Hidden -PassThru
             $context = $Listener |Receive-HttpContext
             $context |Should -Not -BeNullOrEmpty
             $context |Read-WebRequest |Should -BeExactly $Data
@@ -74,7 +74,7 @@ Describe 'Pretendpoint' {
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $binData = ([guid]$Data).ToByteArray()
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
-                "& { Invoke-WebRequest http://localhost:$Port/ -Body ([byte[]]($($binData -join ','))) -ContentType application/octet-stream }" -WindowStyle Hidden -PassThru
+                "& { Invoke-WebRequest http://localhost:$Port/ -Method Post -ContentType application/octet-stream -Body ([byte[]]($($binData -join ','))) }" -WindowStyle Hidden -PassThru
             $context = $Listener |Receive-HttpContext
             $context |Should -Not -BeNullOrEmpty
             [bool](compare $binData ($context |Read-WebRequest)) |Should -BeFalse
@@ -85,7 +85,7 @@ Describe 'Pretendpoint' {
     }
     $testdrive = (Get-PSDrive TestDrive).Root
     Context 'Write-WebResponse cmdlet' {
-        It "Given an HTTP Listener bound to port <Port>, it should send HTTP response data '<Data>'." -TestCases $tests {
+        It "Sending HTTP response data '<Data>'." -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
@@ -96,7 +96,7 @@ Describe 'Pretendpoint' {
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
             'TestDrive:\testbody.txt' |Should -FileContentMatch $Data
         } -Skip:$notAdmin
-        It "Given an HTTP Listener bound to port <Port>, it should send HTTP response data '<Data>' (binary)." -TestCases $tests {
+        It "Sending HTTP response data '<Data>' (binary)." -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             [byte[]] $binData = ([guid]$Data).ToByteArray()
@@ -111,13 +111,48 @@ Describe 'Pretendpoint' {
         } -Skip:$notAdmin
     }
     Context 'Stop-HttpListener cmdlet' {
-        It "Given an HTTP Listener bound to port <Port>, it should stop listening, and not be startable." -TestCases $tests {
+        It "Stops listening, and not be startable." -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $Listener |Stop-HttpListener
             $Listener.IsListening |Should -BeFalse
             { $Listener.Start() } |Should -Throw 'Cannot access a disposed object.'
         } -Skip:$notAdmin
+    }
+    Context 'Get-WebRequestBody cmdlet' {
+        It "Getting a request via port <Port> should receive HTTP POST data '<Data>'." -TestCases $tests {
+            Param($Port,$Listener,$Data)
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+                "& { Invoke-WebRequest http://localhost:$Port/ -Method Post -ContentType text/plain -Body '$Data' }" -WindowStyle Hidden -PassThru
+            Get-WebRequestBody -Port $Port |Should -BeExactly $Data
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+        } -Skip:$notAdmin
+        It "Getting a request via port <Port> should receive HTTP POST data '<Data>' (binary)." -TestCases $tests {
+            Param($Port,$Listener,$Data)
+            $binData = ([guid]$Data).ToByteArray()
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+                "& { Invoke-WebRequest http://localhost:$Port/ -Method Post -ContentType application/octet-stream -Body ([byte[]]($($binData -join ','))) }" -WindowStyle Hidden -PassThru
+            [bool](compare $binData (Get-WebRequestBody -Port $Port)) |Should -BeFalse
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+        } -Skip:$notAdmin
+        It "Sending HTTP response data '<Data>' to port <Port> should be received." -TestCases $tests {
+            Param($Port,$Listener,$Data)
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+               "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.txt' }" -WindowStyle Normal -PassThru
+            Get-WebRequestBody -Port $Port -StatusCode 200 -Body $Data
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+            'TestDrive:\testbody.txt' |Should -FileContentMatch $Data
+        } -Skip:$false
+        It "Sending HTTP response data '<Data>' (binary) to port <Port> should be received." -TestCases $tests {
+            Param($Port,$Listener,$Data)
+            [byte[]] $binData = ([guid]$Data).ToByteArray()
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+                "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.dat' }" -WindowStyle Hidden -PassThru
+            ,$binData |Get-WebRequestBody -Port $Port -StatusCode 200
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+            [byte[]] $response = Get-Content TestDrive:\testbody.dat -AsByteStream
+            [bool](compare $binData $response) |Should -BeFalse
+        } -Skip:$true
     }
 }
 $env:Path = $envPath

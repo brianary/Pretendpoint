@@ -18,7 +18,7 @@ type StopHttpListenerCommand () =
     static member internal Invoke (cmdlet:PSCmdlet) (listener:HttpListener) =
         listener.Close ()
         (listener :> IDisposable).Dispose ()
-        sprintf "%A" listener |> cmdlet.WriteVerbose
+        cmdlet.WriteVerbose "HTTP listener stopped"
 
     override x.ProcessRecord () =
         base.ProcessRecord ()

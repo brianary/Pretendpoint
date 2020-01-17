@@ -37,6 +37,7 @@ type WriteWebResponseCommand () =
     /// Executes the cmdlet.
     static member internal Invoke (cmdlet:PSCmdlet) (response:HttpListenerResponse)
         (body:obj) (encoding:string) (contentType:string) (statusCode:HttpStatusCode) =
+        cmdlet.WriteVerbose "Response:"
         let data =
             match body with
             | null -> [||]
@@ -61,8 +62,10 @@ type WriteWebResponseCommand () =
             | _ -> ErrorRecord (ArgumentException (sprintf "The response body may only be a string or byte array, got '%A'." (body.GetType()), "Body"),
                                 "BADTYPE", ErrorCategory.InvalidArgument, body) |> cmdlet.ThrowTerminatingError; [||]
         response.StatusCode <- int statusCode
+        response.ContentLength64 <- int64 data.Length
         response.OutputStream.Write (ReadOnlySpan<byte> data)
         response.OutputStream.Close ()
+        Seq.iter cmdlet.WriteVerbose [for h in response.Headers -> sprintf "%s: %s" h response.Headers.[h]]
 
     override x.ProcessRecord () =
         base.ProcessRecord ()
