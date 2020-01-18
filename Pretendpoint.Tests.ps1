@@ -28,7 +28,7 @@ Describe 'Pretendpoint' {
      }
     $tests = $http.Keys |foreach {@{ Port = $_; Listener = $http[$_]; Data = "$(New-Guid)" }}
     Context 'Receive-HttpContext cmdlet' {
-        It "Given an HTTP Listener bound to port <Port>, and a request with a user agent of '<Data>', an HTTP context for that request is returned." -TestCases $tests {
+        It "Given HTTP Listener port <Port> and a request with 'User-Agent: <Data>', an HTTP context is returned." -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
