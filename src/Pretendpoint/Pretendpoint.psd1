@@ -2,14 +2,14 @@
 # and https://docs.microsoft.com/powershell/module/microsoft.powershell.core/new-modulemanifest
 @{
 RootModule = 'Pretendpoint.dll'
-ModuleVersion = '1.0.2'
+ModuleVersion = '1.0.3'
 CompatiblePSEditions = ,'Core'
 GUID = '99dd8a26-0a66-4c4f-99e2-0a7e01e3af51'
 Author = 'Brian Lalonde'
 #CompanyName = 'Unknown'
 Copyright = 'Copyright © 2020 Brian Lalonde'
 Description = @'
-The Pretend Endpoint, the disposable web server.
+Pretend Endpoint, the disposable web server.
 A set of PowerShell cmdlets to create an HTTP test server/endpoint for inspecting or debugging client requests.
 '@
 PowerShellVersion = '6.0'

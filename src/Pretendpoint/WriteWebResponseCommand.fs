@@ -32,7 +32,7 @@ type WriteWebResponseCommand () =
 
     /// Sets the HTTP response status code.
     [<Parameter>]
-    member val StatusCode : HttpStatusCode = HttpStatusCode.OK with get, set
+    member val StatusCode : HttpStatusCode = enum 0 with get, set
 
     /// Executes the cmdlet.
     static member internal Invoke (cmdlet:PSCmdlet) (response:HttpListenerResponse)
@@ -61,10 +61,15 @@ type WriteWebResponseCommand () =
                                     "BADTYPE", ErrorCategory.InvalidArgument, body) |> cmdlet.ThrowTerminatingError; [||]
             | _ -> ErrorRecord (ArgumentException (sprintf "The response body may only be a string or byte array, got '%A'." (body.GetType()), "Body"),
                                 "BADTYPE", ErrorCategory.InvalidArgument, body) |> cmdlet.ThrowTerminatingError; [||]
-        response.StatusCode <- int statusCode
-        response.ContentLength64 <- int64 data.Length
-        response.OutputStream.Write (ReadOnlySpan<byte> data)
+        response.StatusCode <-
+            if (int statusCode) = 0 then if data.Length = 0 then 204 else 200
+            else int statusCode
+        if response.StatusCode <> 204 then
+            response.ContentLength64 <- int64 data.Length
+            response.OutputStream.Write (ReadOnlySpan<byte> data)
         response.OutputStream.Close ()
+        sprintf "HTTP/%A %d %s" response.ProtocolVersion response.StatusCode response.StatusDescription
+            |> cmdlet.WriteVerbose
         Seq.iter cmdlet.WriteVerbose [for h in response.Headers -> sprintf "%s: %s" h response.Headers.[h]]
 
     override x.ProcessRecord () =

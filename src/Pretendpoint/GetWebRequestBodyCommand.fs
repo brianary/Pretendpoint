@@ -33,7 +33,7 @@ type GetWebRequestBodyCommand () =
 
     /// Sets the HTTP response status code.
     [<Parameter(ParameterSetName="StaticResponse")>]
-    member val StatusCode : HttpStatusCode = HttpStatusCode.NoContent with get, set
+    member val StatusCode : HttpStatusCode = enum 0 with get, set
 
     /// A script block that accepts an HttpListenerContext parameter to respond with.
     [<Parameter(ParameterSetName="DynamicResponse", Mandatory=true)>]
@@ -54,6 +54,6 @@ type GetWebRequestBodyCommand () =
             if context.Response.OutputStream.CanWrite then
                 context.Response.OutputStream.Close ()
         else
-            sprintf "Returning static HTTP %d %A %s response" (int x.StatusCode) x.StatusCode x.ContentType |> x.WriteVerbose
+            x.WriteVerbose "Returning static response"
             WriteWebResponseCommand.Invoke x context.Response x.Body x.ResponseEncoding x.ContentType x.StatusCode
         StopHttpListenerCommand.Invoke x http

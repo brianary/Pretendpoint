@@ -85,7 +85,7 @@ type ReadWebRequestCommand () =
                 (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
         elif encoding = "hex" then
             (ReadWebRequestCommand.ReadBinaryData cmdlet request)
-                |> Array.map (sprintf "%2x")
+                |> Array.map (sprintf "%02X")
                 |> (fun b -> String.Join(" ",b) :> obj)
         elif encoding = "byte" then (ReadWebRequestCommand.ReadBinaryData cmdlet request) :> obj
         else (ReadWebRequestCommand.GetEncoding encoding |> ReadWebRequestCommand.ReadTextData cmdlet request) :> obj
