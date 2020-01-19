@@ -1,19 +1,30 @@
 # Pester tests, see https://github.com/Pester/Pester/wiki
 $envPath = $env:Path # avoid testing the wrong cmdlets
-Import-Module (Resolve-Path ./src/*/bin/Debug/*/*.psd1) -vb
+$module = Import-Module (Resolve-Path ./src/*/bin/Debug/*/*.psd1) -PassThru -vb
+Import-LocalizedData -BindingVariable manifest -BaseDirectory ./src/* -FileName (Split-Path $PWD -Leaf)
 $notAdmin = !([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).`
     IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-Describe 'Pretendpoint' {
-    Context 'Pretendpoint module' {
-        It "Given the Pretendpoint module, it should have a nonzero version" {
-            $m = Get-Module Pretendpoint
-            $m.Version |Should -Not -Be $null
-            $m.Version.Major |Should -BeGreaterThan 0
+Describe $module.Name {
+    Context "$($module.Name) module" -Tag Module {
+        It "Given the module, the version should match the manifest version" {
+            $module.Version |Should -BeExactly $manifest.ModuleVersion
         }
+		It "Given the module, the DLL file version should match the manifest version" {
+            (Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.FileVersionRaw |
+                Should -BeLike "$($manifest.ModuleVersion)*"
+		}
+		It "Given the module, the DLL product version should match the manifest version" {
+            (Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.ProductVersionRaw |
+                Should -BeLike "$($manifest.ModuleVersion)*"
+		} -Pending
+		It "Given the module, the DLL should have a valid semantic product version" {
+			$v = (Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.ProductVersion
+			[semver]::TryParse($v, [ref]$null) |Should -BeTrue
+		} -Pending
     }
     $http = @{}
     Context 'Start-HttpListener cmdlet' {
-        It "Given a port <Port>, an HTTP listener is listening and a TCP socket may be established to that port." -TestCases @(
+        It "Given a port <Port>, an HTTP listener is listening and a TCP socket may be established to that port" -TestCases @(
             7777,8080 |foreach {@{ Port = $_ }}
         ) {
             Param($Port)
@@ -28,7 +39,7 @@ Describe 'Pretendpoint' {
      }
     $tests = $http.Keys |foreach {@{ Port = $_; Listener = $http[$_]; Data = "$(New-Guid)" }}
     Context 'Receive-HttpContext cmdlet' {
-        It "Given HTTP Listener port <Port> and a request with 'User-Agent: <Data>', an HTTP context is returned." -TestCases $tests {
+        It "Given HTTP Listener port <Port> and a request with 'User-Agent: <Data>', an HTTP context is returned" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
@@ -41,7 +52,7 @@ Describe 'Pretendpoint' {
         } -Skip:$notAdmin
     }
     Context 'Suspend-HttpListener cmdlet' {
-        It "Stops listening." -TestCases $tests {
+        It "Stops listening" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $Listener |Suspend-HttpListener
@@ -49,7 +60,7 @@ Describe 'Pretendpoint' {
         } -Skip:$notAdmin
     }
     Context 'Restart-HttpListener cmdlet' {
-        It "Given a suspended HTTP Listener bound to port <Port>, it should start listening again." -TestCases $tests {
+        It "Given a suspended HTTP Listener bound to port <Port>, it should start listening again" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if($Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener is still listening"}
             $Listener |Restart-HttpListener
@@ -57,7 +68,7 @@ Describe 'Pretendpoint' {
         } -Skip:$notAdmin
     }
     Context 'Read-WebRequest cmdlet' {
-        It "Given an HTTP Listener bound to port <Port>, it should receive HTTP POST data '<Data>'." -TestCases $tests {
+        It "Given an HTTP Listener bound to port <Port>, it should receive HTTP POST data '<Data>'" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
@@ -69,7 +80,7 @@ Describe 'Pretendpoint' {
             $context.Response.Close()
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
         } -Skip:$notAdmin
-        It "Given an HTTP Listener bound to port <Port>, it should receive HTTP POST data '<Data>' (binary)." -TestCases $tests {
+        It "Given an HTTP Listener bound to port <Port>, it should receive HTTP POST data '<Data>' (binary)" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $binData = ([guid]$Data).ToByteArray()
@@ -85,7 +96,7 @@ Describe 'Pretendpoint' {
     }
     $testdrive = (Get-PSDrive TestDrive).Root
     Context 'Write-WebResponse cmdlet' {
-        It "Sending HTTP response data '<Data>'." -TestCases $tests {
+        It "Sending HTTP response data '<Data>'" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
@@ -96,7 +107,7 @@ Describe 'Pretendpoint' {
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
             'TestDrive:\testbody.txt' |Should -FileContentMatch $Data
         } -Skip:$notAdmin
-        It "Sending HTTP response data '<Data>' (binary)." -TestCases $tests {
+        It "Sending HTTP response data '<Data>' (binary)" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             [byte[]] $binData = ([guid]$Data).ToByteArray()
@@ -111,7 +122,7 @@ Describe 'Pretendpoint' {
         } -Skip:$notAdmin
     }
     Context 'Stop-HttpListener cmdlet' {
-        It "Stops listening, and not be startable." -TestCases $tests {
+        It "Stops listening, and not be startable" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
             $Listener |Stop-HttpListener
@@ -120,14 +131,14 @@ Describe 'Pretendpoint' {
         } -Skip:$notAdmin
     }
     Context 'Get-WebRequestBody cmdlet' {
-        It "Getting a request via port <Port> should receive HTTP POST data '<Data>'." -TestCases $tests {
+        It "Getting a request via port <Port> should receive HTTP POST data '<Data>'" -TestCases $tests {
             Param($Port,$Listener,$Data)
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
                 "& { Invoke-WebRequest http://localhost:$Port/ -Method Post -ContentType text/plain -Body '$Data' }" -WindowStyle Hidden -PassThru
             Get-WebRequestBody -Port $Port |Should -BeExactly $Data
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
         } -Skip:$notAdmin
-        It "Getting a request via port <Port> should receive HTTP POST data '<Data>' (binary)." -TestCases $tests {
+        It "Getting a request via port <Port> should receive HTTP POST data '<Data>' (binary)" -TestCases $tests {
             Param($Port,$Listener,$Data)
             $binData = ([guid]$Data).ToByteArray()
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
@@ -135,15 +146,15 @@ Describe 'Pretendpoint' {
             [bool](compare $binData (Get-WebRequestBody -Port $Port)) |Should -BeFalse
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
         } -Skip:$notAdmin
-        It "Sending HTTP response data '<Data>' to port <Port> should be received." -TestCases $tests {
+        It "Sending HTTP response data '<Data>' to port <Port> should be received" -TestCases $tests {
             Param($Port,$Listener,$Data)
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
                "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.txt' }" -WindowStyle Normal -PassThru
             Get-WebRequestBody -Port $Port -StatusCode 200 -Body $Data
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
             'TestDrive:\testbody.txt' |Should -FileContentMatch $Data
-        } -Skip:$false
-        It "Sending HTTP response data '<Data>' (binary) to port <Port> should be received." -TestCases $tests {
+        } -Pending
+        It "Sending HTTP response data '<Data>' (binary) to port <Port> should be received" -TestCases $tests {
             Param($Port,$Listener,$Data)
             [byte[]] $binData = ([guid]$Data).ToByteArray()
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
@@ -152,7 +163,7 @@ Describe 'Pretendpoint' {
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
             [byte[]] $response = Get-Content TestDrive:\testbody.dat -AsByteStream
             [bool](compare $binData $response) |Should -BeFalse
-        } -Skip:$true
+        } -Pending
     }
 }
 $env:Path = $envPath
