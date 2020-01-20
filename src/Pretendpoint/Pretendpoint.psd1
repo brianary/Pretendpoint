@@ -32,7 +32,7 @@ PrivateData = @{
         Tags = @('endpoint','webserver','webrequest','webresponse','web','server','http')
         LicenseUri = 'https://github.com/brianary/Pretendpoint/blob/master/LICENSE'
         ProjectUri = 'https://github.com/brianary/Pretendpoint/'
-        # IconUri = 'http://webcoder.info/images/Pretendpoint.svg'
+        IconUri = 'http://webcoder.info/images/Pretendpoint.svg'
         # ReleaseNotes = ''
     }
 }

@@ -2,7 +2,7 @@ Pretendpoint
 ============
 
 <!-- To publish to PowerShell Gallery: dotnet build -t:PublishModule -c Release -->
-<!-- img src="Pretendpoint.svg" alt="Pretendpoint icon" align="right" / -->
+<img src="Pretendpoint.svg" alt="Pretendpoint icon" align="right" />
 
 [![Actions Status](https://github.com/brianary/Pretendpoint/workflows/.NET%20Core/badge.svg)](https://github.com/brianary/Pretendpoint/actions)
 
