@@ -14,6 +14,10 @@ Describe $module.Name {
                 Should -BeLike "$($manifest.ModuleVersion)*"
 		}
 		It "Given the module, the DLL product version should match the manifest version" {
+            (Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.ProductVersion |
+                Should -BeLike "$($manifest.ModuleVersion)*"
+		}
+		It "Given the module, the raw DLL product version should match the manifest version" {
             (Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.ProductVersionRaw |
                 Should -BeLike "$($manifest.ModuleVersion)*"
 		} -Pending
@@ -146,10 +150,28 @@ Describe $module.Name {
             [bool](compare $binData (Get-WebRequestBody -Port $Port)) |Should -BeFalse
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
         } -Skip:$notAdmin
+        It "Sending HTTP response data '<Data>' over port <Port> should be received" -TestCases $tests {
+            Param($Port,$Listener,$Data)
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+               "& { Import-Module '$(Resolve-Path ./src/*/bin/Debug/*/*.psd1)'; Get-WebRequestBody -Port $Port -StatusCode 200 -Body '$Data' }" -WindowStyle Hidden -PassThru
+            Invoke-WebRequest http://localhost:$Port/ |Should -BeExactly $Data
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+        } -Skip:$notAdmin
+        # For some reason, these tests don't work, despite being functionally equivalent to tests above.
+        # "SocketException: An existing connection was forcibly closed by the remote host"
+        It "Sending HTTP response data '<Data>' (binary) over port <Port> should be received" -TestCases $tests {
+            Param($Port,$Listener,$Data)
+            [byte[]] $binData = ([guid]$Data).ToByteArray()
+            $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
+               "& { Import-Module '$(Resolve-Path ./src/*/bin/Debug/*/*.psd1)'; [byte[]]@($($binData -join ',')) |Get-WebRequestBody -Port $Port -StatusCode 200; sleep 30; }" -WindowStyle Normal -PassThru
+            Invoke-WebRequest http://localhost:$Port/ |Should -BeExactly $Data
+            Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
+        } -Pending
+        # "Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host."
         It "Sending HTTP response data '<Data>' to port <Port> should be received" -TestCases $tests {
             Param($Port,$Listener,$Data)
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
-               "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.txt' }" -WindowStyle Normal -PassThru
+               "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.txt' }" -WindowStyle Hidden -PassThru
             Get-WebRequestBody -Port $Port -StatusCode 200 -Body $Data
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
             'TestDrive:\testbody.txt' |Should -FileContentMatch $Data
@@ -158,7 +180,7 @@ Describe $module.Name {
             Param($Port,$Listener,$Data)
             [byte[]] $binData = ([guid]$Data).ToByteArray()
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
-                "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.dat' }" -WindowStyle Hidden -PassThru
+                "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.dat'; sleep 30; }" -WindowStyle Normal -PassThru
             ,$binData |Get-WebRequestBody -Port $Port -StatusCode 200
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
             [byte[]] $response = Get-Content TestDrive:\testbody.dat -AsByteStream
