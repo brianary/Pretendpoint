@@ -4,8 +4,8 @@ Pretendpoint
 <!-- To publish to PowerShell Gallery: dotnet build -t:PublishModule -c Release -->
 <img src="Pretendpoint.svg" alt="Pretendpoint icon" align="right" />
 
-![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Pretendpoint)
-![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/Pretendpoint)
+[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Pretendpoint)](https://www.powershellgallery.com/packages/Pretendpoint/)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/Pretendpoint)](https://www.powershellgallery.com/packages/Pretendpoint/)
 [![Actions Status](https://github.com/brianary/Pretendpoint/workflows/.NET%20Core/badge.svg)](https://github.com/brianary/Pretendpoint/actions)
 
 Pretend Endpoint, the disposable web server.
