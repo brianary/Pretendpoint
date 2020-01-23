@@ -11,6 +11,8 @@ Pretendpoint
 Pretend Endpoint, the disposable web server.
 A set of PowerShell cmdlets to create an HTTP test server/endpoint for inspecting or debugging client requests.
 
+![example usage of Pretendpoint](Pretendpoint.gif)
+
 Cmdlets
 -------
 
