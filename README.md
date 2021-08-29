@@ -16,7 +16,7 @@ A set of PowerShell cmdlets to create an HTTP test server/endpoint for inspectin
 Cmdlets
 -------
 
-Documentation is automatically generated using [platyPS](https://github.com/PowerShell/platyPS).
+Documentation is automatically generated using [platyPS](https://github.com/PowerShell/platyPS) (`.\doc.cmd`).
 
 - [Get-WebRequestBody](docs/Get-WebRequestBody.md) &mdash;
   Starts an HTTP listener to receive a single request, whose body is returned, supporting static or dynamic respnoses.
@@ -38,6 +38,4 @@ Documentation is automatically generated using [platyPS](https://github.com/Powe
 Tests
 -----
 
-Tests are written for [Pester](https://github.com/Pester/Pester).
-
-To run the tests, run `dotnet build -t:pester`.
+Tests are written for [Pester](https://github.com/Pester/Pester) (`.\test.cmd`).
