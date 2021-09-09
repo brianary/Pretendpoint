@@ -98,11 +98,11 @@ Describe $module.Name {
             Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
         } -Skip:$notAdmin
     }
-    $testdrive = (Get-PSDrive TestDrive).Root
     Context 'Write-WebResponse cmdlet' {
         It "Sending HTTP response data '<Data>'" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
+            $testdrive = (Get-PSDrive TestDrive).Root
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
                 "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.txt' }" -WindowStyle Hidden -PassThru
             $context = $Listener |Receive-HttpContext
@@ -114,6 +114,7 @@ Describe $module.Name {
         It "Sending HTTP response data '<Data>' (binary)" -TestCases $tests {
             Param($Port,$Listener,$Data)
             if(!$Listener.IsListening) {Set-ItResult -Inconclusive -Because "the HTTP listener isn't listening"}
+            $testdrive = (Get-PSDrive TestDrive).Root
             [byte[]] $binData = ([guid]$Data).ToByteArray()
             $iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
                 "& { Invoke-WebRequest http://localhost:$Port/ -OutFile '$testdrive\testbody.dat' }" -WindowStyle Hidden -PassThru
@@ -187,5 +188,5 @@ Describe $module.Name {
             [bool](compare $binData $response) |Should -BeFalse
         } -Pending
     }
-}
+}.GetNewClosure()
 $env:Path = $envPath
