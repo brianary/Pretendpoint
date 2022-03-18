@@ -1,10 +1,12 @@
 # Pester tests, see https://github.com/Pester/Pester/wiki
 Import-LocalizedData -BindingVariable manifest -BaseDirectory ./src/* -FileName (Split-Path $PWD -Leaf)
-# ensure the right cmdlets are tested
-$manifest.CmdletsToExport |Get-Command -CommandType Cmdlet -EA 0 |Remove-Item
-$module = Import-Module (Resolve-Path ./src/*/bin/Debug/*/*.psd1) -PassThru -vb
+$psd1 = Resolve-Path ./src/*/bin/Debug/*/*.psd1
+if(1 -lt ($psd1 |Measure-Object).Count) {throw "Too many module binaries found: $psd1"}
+$module = Import-Module "$psd1" -PassThru -vb
+
 $notAdmin = !([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).`
     IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
 Describe $module.Name {
     Context "$($module.Name) module" -Tag Module {
         It "Given the module, the version should match the manifest version" {
@@ -33,7 +35,7 @@ Describe $module.Name {
             7777,8080 |foreach {@{ Port = $_ }}
         ) {
             Param($Port)
-            $http[$Port] = Start-HttpListener $Port
+            $http[$Port] = Pretendpoint\Start-HttpListener $Port
             $http[$Port].IsListening |Should -BeTrue
             $socket = New-Object Net.Sockets.Socket InterNetwork,Stream,Tcp
             $socket.Connect(0x7F000001,$Port)
