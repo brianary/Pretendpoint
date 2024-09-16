@@ -2,7 +2,7 @@
 # and https://docs.microsoft.com/powershell/module/microsoft.powershell.core/new-modulemanifest
 @{
 RootModule = 'Pretendpoint.dll'
-ModuleVersion = '1.0.6'
+ModuleVersion = '1.0.7'
 CompatiblePSEditions = @('Core')
 GUID = '99dd8a26-0a66-4c4f-99e2-0a7e01e3af51'
 Author = 'Brian Lalonde'
