@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PublishTrimmed>false</PublishTrimmed>
@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="8.0.403" />
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" />
     <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
   </ItemGroup>
@@ -49,7 +50,7 @@
   <Target Name="Pester" DependsOnTargets="Publish" Condition="'$(Configuration)' == 'Debug'">
     <Copy SourceFiles="$(OutputPath)\publish\FSharp.Core.dll"
         DestinationFolder="$(OutputPath)" />
-    <Exec Command='pwsh -noni -nop -c "cd ..\..; Invoke-Pester"'
+    <Exec Command='pwsh -noni -nop -c "cd ..\..; Invoke-Pester -Configuration @{TestResult=@{Enabled=!0}}"'
         IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
   </Target>
 
