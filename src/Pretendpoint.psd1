@@ -1,8 +1,8 @@
-# see https://docs.microsoft.com/powershell/scripting/developer/module/how-to-write-a-powershell-module-manifest
+﻿# see https://docs.microsoft.com/powershell/scripting/developer/module/how-to-write-a-powershell-module-manifest
 # and https://docs.microsoft.com/powershell/module/microsoft.powershell.core/new-modulemanifest
 @{
 RootModule = 'Pretendpoint.dll'
-ModuleVersion = '1.1.8'
+ModuleVersion = '0.0.0.0'
 CompatiblePSEditions = @('Core')
 GUID = '99dd8a26-0a66-4c4f-99e2-0a7e01e3af51'
 Author = 'Brian Lalonde'

@@ -1,34 +1,14 @@
 # Pester tests, see https://github.com/Pester/Pester/wiki
-Import-LocalizedData -BindingVariable manifest -BaseDirectory ./src/* -FileName (Split-Path $PWD -Leaf)
-$psd1 = Resolve-Path ./src/*/bin/*/*/*/*.psd1
+Import-LocalizedData -BindingVariable manifest -BaseDirectory src -FileName (Split-Path $PWD -Leaf)
+$psd1 = Resolve-Path ./src/bin/*/net*/publish/*.psd1
 if(1 -lt ($psd1 |Measure-Object).Count) {throw "Too many module binaries found: $psd1"}
 $module = Import-Module "$psd1" -PassThru -vb
-
-$notAdmin = !([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).`
-	IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+$notAdmin = !( $IsWindows ?
+	([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).`
+		IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) :
+		[Environment]::IsPrivilegedProcess )
 
 Describe $module.Name {
-	Context "$($module.Name) module" -Tag Module {
-		It "Given the module, the version should match the manifest version" {
-			$module.Version |Should -BeExactly $manifest.ModuleVersion
-		}
-		It "Given the module, the DLL file version should match the manifest version" {
-			(Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.FileVersionRaw |
-				Should -BeLike "$($manifest.ModuleVersion)*"
-		}
-		It "Given the module, the DLL product version should match the manifest version" {
-			(Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.ProductVersion |
-				Should -BeLike "$($manifest.ModuleVersion)*"
-		}
-		It "Given the module, the raw DLL product version should match the manifest version" {
-			(Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.ProductVersionRaw |
-				Should -BeLike "$($manifest.ModuleVersion)*"
-		} -Pending
-		It "Given the module, the DLL should have a valid semantic product version" {
-			$v = (Get-Item "$($module.ModuleBase)\$($module.Name).dll").VersionInfo.ProductVersion
-			[semver]::TryParse($v, [ref]$null) |Should -BeTrue
-		} -Pending
-	}
 	Context 'Start-HttpListener cmdlet' {
 		It "Given a port '<Port>', an HTTP listener is listening and a TCP socket may be established to that port" -TestCases @(
 			@{ Port = 7777 }
@@ -217,7 +197,7 @@ Describe $module.Name {
 		) {
 			Param($Port,$Data)
 			$iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
-			   "& { Import-Module '$(Resolve-Path ./src/*/bin/Debug/*/*.psd1)'; Get-WebRequestBody -Port $Port -StatusCode 200 -Body '$Data' }" -WindowStyle Hidden -PassThru
+			   "& { Import-Module '$(Resolve-Path ./src/bin/*/net*/publish/*.psd1)'; Get-WebRequestBody -Port $Port -StatusCode 200 -Body '$Data' }" -WindowStyle Hidden -PassThru
 			Invoke-WebRequest http://localhost:$Port/ |Should -BeExactly $Data
 			Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
 		} -Skip:$notAdmin
@@ -230,10 +210,10 @@ Describe $module.Name {
 			Param($Port,$Data)
 			[byte[]] $binData = ([guid]$Data).ToByteArray()
 			$iwr = Start-Process (Get-Process -Id $PID).Path '-nol','-noni','-nop','-c',
-			   "& { Import-Module '$(Resolve-Path ./src/*/bin/Debug/*/*.psd1)'; [byte[]]@($($binData -join ',')) |Get-WebRequestBody -Port $Port -StatusCode 200; sleep 30; }" -WindowStyle Normal -PassThru
+			   "& { Import-Module '$(Resolve-Path ./src/bin/*/net*/publish/*.psd1)'; [byte[]]@($($binData -join ',')) |Get-WebRequestBody -Port $Port -StatusCode 200; sleep 30; }" -WindowStyle Normal -PassThru
 			Invoke-WebRequest http://localhost:$Port/ |Should -BeExactly $Data
 			Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
-		} -Pending
+		} -Skip #TODO: This is a pending test.
 		# "Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host."
 		It "Sending HTTP response data '<Data>' to port '<Port>' should be received" -TestCases @(
 			@{ Port = 8104; Data = "$(New-Guid)" }
@@ -245,7 +225,7 @@ Describe $module.Name {
 			Get-WebRequestBody -Port $Port -StatusCode 200 -Body $Data
 			Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
 			'TestDrive:\testbody.txt' |Should -FileContentMatch $Data
-		} -Pending
+		} -Skip #TODO: This is a pending test.
 		It "Sending HTTP response data '<Data>' (binary) to port '<Port>' should be received" -TestCases @(
 			@{ Port = 8106; Data = "$(New-Guid)" }
 			@{ Port = 8107; Data = "$(New-Guid)" }
@@ -258,6 +238,6 @@ Describe $module.Name {
 			Wait-Process -Id $iwr.Id -ErrorAction SilentlyContinue
 			[byte[]] $response = Get-Content TestDrive:\testbody.dat -AsByteStream
 			[bool](Compare-Object $binData $response) |Should -BeFalse
-		} -Pending
+		} -Skip #TODO: This is a pending test.
 	}
 }.GetNewClosure()

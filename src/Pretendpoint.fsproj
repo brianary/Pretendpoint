@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ReadWebRequestCommand.fs" />
+    <Compile Include="ReceiveHttpContextCommand.fs" />
+    <Compile Include="RestartHttpListenerCommand.fs" />
+    <Compile Include="StartHttpListenerCommand.fs" />
+    <Compile Include="StopHttpListenerCommand.fs" />
+    <Compile Include="SuspendHttpListenerCommand.fs" />
+    <Compile Include="WriteWebResponseCommand.fs" />
+    <Compile Include="GetWebRequestBodyCommand.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="8.0.403" />
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildProjectName).psd1" Pack="true" CopyToOutputDirectory="Always" />
+    <None Include="$(MSBuildProjectName).dll-Help.xml" Pack="true" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+  <ItemGroup>
+    <PSModulePath Include="$(PSModulePath)" Exclude="C:\Program Files\**;C:\Windows\**;C:\ProgramData\chocolatey\**" />
+  </ItemGroup>
+
+</Project>
